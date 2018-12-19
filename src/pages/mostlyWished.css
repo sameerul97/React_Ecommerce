@@ -1,0 +1,17 @@
+img {
+    height: 200px !important;
+    border: none;
+}
+.img-thumbnail{
+    border: none;
+}
+
+.card{
+    transition: all 0.2s;
+    /* color: white; */
+}
+
+.card:hover{
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+}
+
