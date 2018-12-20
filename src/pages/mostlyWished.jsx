@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import "./mostlyWished.css"
+import { withRouter } from "react-router-dom";
 class MostlyWished extends Component {
 
     render() {
@@ -56,7 +57,9 @@ class MostlyWished extends Component {
     }
     testFunction(mobileId){
         console.log("HEllo, Im test function");
-        console.log(mobileId)
+        console.log(mobileId);
+        
+        this.props.history.push("/detailPhone/"+mobileId)
     }
     componentDidMount() {
         const mostlyWishedArr = [];
@@ -103,4 +106,4 @@ class MostlyWished extends Component {
 
 
 
-export default MostlyWished;
+export default withRouter(MostlyWished);

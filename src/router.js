@@ -3,10 +3,12 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import AboutPageComponent from "./pages/aboutPage"
 import HomePageComponent from "./pages/homePage"
 import AllPhonesComponent from "./pages/allPhonesPage"
+import DetailPhoneComponent from "./pages/detailPhone";
 
 const Index = () => <HomePageComponent></HomePageComponent>;
 const About = () => <AboutPageComponent></AboutPageComponent>;
 const AllPhones = () => <AllPhonesComponent></AllPhonesComponent>;
+const DetailPhone = () => <DetailPhoneComponent></DetailPhoneComponent>;
 // const Users = () => <h2>Users</h2>;
 
 const AppRouter = () => (
@@ -36,6 +38,14 @@ const AppRouter = () => (
             <Route path="/" exact component={Index} />
             <Route path="/about/" component={About} />
             <Route path="/allPhones/" component={AllPhones} />
+            <Route path="/detailPhone/:mobileid" component={DetailPhone} />
+            {/* <Route
+                path="/detailPhone/path"
+                render={(routeProps) => (
+                    <DetailPhoneComponent {...routeProps} {...props} />
+                )}
+            /> */}
+
         </div>
 
     </Router>
