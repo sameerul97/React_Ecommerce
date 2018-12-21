@@ -1,9 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
-import AboutPageComponent from "./pages/aboutPage"
-import HomePageComponent from "./pages/homePage"
-import AllPhonesComponent from "./pages/allPhonesPage"
-import DetailPhoneComponent from "./pages/detailPhone";
+import AboutPageComponent from "./components/aboutPage"
+import HomePageComponent from "./components/homePage"
+import AllPhonesComponent from "./components/allPhonesPage"
+import DetailPhoneComponent from "./components/detailPhone";
 
 const Index = () => <HomePageComponent></HomePageComponent>;
 const About = () => <AboutPageComponent></AboutPageComponent>;
@@ -15,8 +15,8 @@ const AppRouter = () => (
     <Router>
         <div>
 
-            <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                <a className="navbar-brand" href="#">Navbar</a>
+            <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+                <a className="navbar-brand" href="#">React Store</a>
                 <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>

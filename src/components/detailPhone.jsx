@@ -1,14 +1,26 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { withRouter } from "react-router-dom";
+// import myClass from 
+import authservice from "../services/authenticationService";
 
 class DetailPhoneComponent extends Component {
+    constructor(props) {
+        super(props);
+        // var class = new myClass;
+        console.log(authservice.format())
+        console.log(authservice.setData("BOIII"));
+        console.log(authservice.format());
 
+        this.state = {
+            name: "sameere"
+        };
+    }
     componentDidMount() {
         console.log("Im detail comp")
         // console.log(this.props.match.params);
         // console.log(this.props.match.params.mobileid);
-        const mobileIdToSearch = 120;
+        const mobileIdToSearch = this.props.match.params.mobileid;
         console.log(mobileIdToSearch)
         var url = new URL("http://localhost:3000/getPhone/" + mobileIdToSearch)
         var params = { mobileId: mobileIdToSearch }
@@ -54,20 +66,26 @@ class DetailPhoneComponent extends Component {
             return response.json();
         })
             // .then(response => response.json())
-            .then(function (myJson) {
-                console.log((myJson.email));
+            .then(myJson => {
+                console.log((myJson));
                 localStorage.setItem("email", myJson.email)
                 localStorage.setItem("userId", myJson.userId)
                 localStorage.setItem("name", myJson.name)
                 localStorage.setItem("token", myJson.token)
+                this.setState({
+                    name: myJson.name
+                })
                 return myJson.MobileData;
             })
+
     }
     render() {
+        const samName = this.state.name;
+
         return (
             <div>
                 <h1>Detaail comp</h1>
-                {/* <h1>{mobileId}</h1> */}
+                <h1>{samName}</h1>
             </div>
         )
     }

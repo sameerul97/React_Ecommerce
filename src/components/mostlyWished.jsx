@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import "./mostlyWished.css"
 import { withRouter } from "react-router-dom";
+
 class MostlyWished extends Component {
 
     render() {
+        // card component
         const itemName = this.state.hits.map((phone) =>
             <div className="col" key={phone.mobileId} >
                 <div className="card"  >
@@ -27,6 +29,7 @@ class MostlyWished extends Component {
                 </div>
             </div>
         );
+
         return (
             <div>
                 <div>

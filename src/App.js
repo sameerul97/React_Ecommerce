@@ -8,7 +8,7 @@ class App extends Component {
     return (
       <div className="App">
       <Router />
-      {/* <h1>{name}</h1> */}
+      <h1>{name}</h1>
       </div>
     );
   }

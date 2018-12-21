@@ -10,7 +10,7 @@ class HomePage extends Component {
                 <div className="landingPage">
                     <div className="col col1">
                         <div className=" titlePageText text-white text-uppercase position-sticky">
-                            <p className="display-4">Angular Store</p>
+                            <p className="display-4">React Store</p>
                             <hr></hr>
                         </div>
                     </div>
