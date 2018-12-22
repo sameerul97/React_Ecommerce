@@ -8,12 +8,12 @@ class HomePage extends Component {
         return (
             <div>
                 <div className="landingPage">
-                    <div className="col col1">
+                    {/* <div className="col col1"> */}
                         <div className=" titlePageText text-white text-uppercase position-sticky">
                             <p className="display-4">React Store</p>
                             <hr></hr>
                         </div>
-                    </div>
+                    {/* </div> */}
                 </div>
                 <BestSelling className="text-dark"></BestSelling>
                 <MostlyWished className="text-dark"></MostlyWished>

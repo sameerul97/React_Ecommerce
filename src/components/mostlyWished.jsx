@@ -7,8 +7,8 @@ class MostlyWished extends Component {
     render() {
         // card component
         const itemName = this.state.hits.map((phone) =>
-            <div className="col" key={phone.mobileId} >
-                <div className="card"  >
+            <div className="col d-flex" key={phone.mobileId} >
+                <div className="card flex-fill shadow-sm"  >
                     <div className="view overlay">
                         <img className="img-thumbnail" src={phone.mobileImageUrl} />
                     </div>

@@ -1,16 +1,16 @@
 var data = "initial";
-function format() {
+function authservice() {
     //convert input to output
-    console.log(data);
+    // console.log(data);
     // data = "sammmerere";
     return data;
 }
 function setData(dataCameIn) {
-    console.log(dataCameIn);
-    console.log(data);
+    // console.log(dataCameIn);
+    // console.log(data);
     data = dataCameIn;
-    console.log(data);
-    isAuthenticated();
+    // console.log(data);
+    // isAuthenticated();
 }
 function isLoggedIn() {
     // Checking if the token exists or checking the expiration of the token
@@ -50,5 +50,5 @@ function isAuthenticated() {
         })
 }
 module.exports = {
-    format: format, setData
+    authservice: authservice, setData
 };
