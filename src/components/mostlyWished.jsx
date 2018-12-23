@@ -20,7 +20,7 @@ class MostlyWished extends Component {
                             <span>{phone.mobilePrice}</span>
                         </span>
                         <span className="float-right">
-                            <a className=" btn btn-info text-white" onClick={this.testFunction.bind(this,phone.mobileId)}>
+                            <a className=" btn btn-info text-white" onClick={this.testFunction.bind(this, phone.mobileId)}>
                                 <span>
                                     <i className="lnr lnr-cart"></i>
                                 </span>Select Phone</a>
@@ -35,15 +35,8 @@ class MostlyWished extends Component {
                 <div>
                     <div className="container">
                         <div className="display-4 p-2 text-center">Mostly Wished</div>
-
-                        {/* <ul>
-                            {itemName}
-                        </ul> */}
                         <div className="row">
-
                             {itemName}
-
-
                         </div>
                     </div>
                 </div>
@@ -58,22 +51,12 @@ class MostlyWished extends Component {
             hits: [],
         };
     }
-    testFunction(mobileId){
-        console.log("HEllo, Im test function");
+    testFunction(mobileId) {
         console.log(mobileId);
-        
-        this.props.history.push("/detailPhone/"+mobileId)
+        this.props.history.push("/detailPhone/" + mobileId)
     }
     componentDidMount() {
         const mostlyWishedArr = [];
-        // this.state = {
-        //     mobilePhone: [{}]
-        // }
-
-        // .then(response => response.json())
-        // .then(data => mostlyWishedArr.push(data.result));
-        //   console.log(mostlyWishedArr);
-        //   console.log(mostlyWishedArr[0]);
         fetch("http://localhost:3000/mostlyWished")
             .then(function (response) {
                 return response.json();
@@ -83,27 +66,8 @@ class MostlyWished extends Component {
                 return myJson.result;
             })
             .then(mostlyWished => {
-
-
                 this.setState({ hits: mostlyWished })
-                // this.state.setState({ hits: mostlyWished[0] })
-                // console.log("last one  ", this.state);
             })
-
-
-        // .then(response => response.json())
-        // .then(response => console.log(response))
-        // .then(data => console.log(data));
-
-
-
-        // .then(data => this.setState({ hits: data }), function () {
-        //     console.log(this.state.hits);
-        // })
-
-        // console.log(this.state.hits)
-
-
     }
 }
 

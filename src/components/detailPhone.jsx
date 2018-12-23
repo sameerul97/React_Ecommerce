@@ -14,11 +14,6 @@ class DetailPhoneComponent extends Component {
         console.log(authservice.authservice());
 
         this.state = {
-            name: "sameere",
-            phoneDetails: {
-                sizeVariant: {}
-            },
-            colorVar: [],
             android: Boolean,
             mobilePhone: {
                 _id: "",
@@ -43,6 +38,13 @@ class DetailPhoneComponent extends Component {
             selectedSizeVariant: "",
             selectedColorVariant: ""
         };
+    }
+    setSizeVariant(sizeVariant){
+        // console.log(sizeVariant);
+        this.setState({selectedSizeVariant:sizeVariant})
+    }
+    setColourVariant(colourVariant){
+        this.setState({selectedColorVariant:colourVariant})
     }
     componentDidMount() {
         console.log("Im detail comp")
@@ -130,15 +132,14 @@ class DetailPhoneComponent extends Component {
 
     }
     render() {
-        console.log(this.state.mobilePhone.colourVariant);
         const colourVariants = Object.keys(this.state.mobilePhone.colourVariant).map(color =>
-            <span className="btn btn-outline-primary font-weight-light text-capitalize mr-1 " >
+            <span className="btn btn-outline-primary font-weight-light text-capitalize mr-1 " onClick={this.setColourVariant.bind(this,this.state.mobilePhone.colourVariant[color])}>
                 {this.state.mobilePhone.colourVariant[color]}
             </span>
         );
 
         const tifOptions = Object.keys(this.state.mobilePhone.sizeVariant).map(key =>
-            <span value={key} className="btn btn-outline-primary font-weight-light text-capitalize mr-1 " >
+            <span value={key} className="btn btn-outline-primary font-weight-light text-capitalize mr-1" onClick={this.setSizeVariant.bind(this,this.state.mobilePhone.sizeVariant[key])} >
                 {this.state.mobilePhone.sizeVariant[key]}
             </span>
         )
@@ -215,14 +216,14 @@ class DetailPhoneComponent extends Component {
                                     <p className="text-monospace font-weight-bold text-info">Battery</p>
                                     <p className="font-weight-light"> {this.state.mobilePhone.topSpec.battery}</p>
                                 </div>
-                                <div class="col col">
+                                <div className="col">
                                     {this.state.android ? (
-                                        <i class="fab fa-android fa-2x"></i>
+                                        <i className="fab fa-android fa-2x"></i>
                                     ) : (
-                                            <i class="fab fa-apple fa-2x"></i>
+                                            <i className="fab fa-apple fa-2x"></i>
                                         )}
-                                    <p class="text-monospace font-weight-bold text-info">OS</p>
-                                    <p class="font-weight-light"> {this.state.mobilePhone.topSpec.os} </p>
+                                    <p className="text-monospace font-weight-bold text-info">OS</p>
+                                    <p className="font-weight-light"> {this.state.mobilePhone.topSpec.os} </p>
                                 </div>
                                 <div className="col">
                                     <i className="fas fa-hdd fa-2x"></i>
