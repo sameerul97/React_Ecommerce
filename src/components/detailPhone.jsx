@@ -9,6 +9,7 @@ class DetailPhoneComponent extends Component {
     constructor(props) {
         super(props);
         // var className = new myClass;
+        console.log(this.props.userIsLoggedIn)
         console.log(authservice.authservice())
         console.log(authservice.setData("BOIII"));
         console.log(authservice.authservice());
@@ -39,12 +40,12 @@ class DetailPhoneComponent extends Component {
             selectedColorVariant: ""
         };
     }
-    setSizeVariant(sizeVariant){
+    setSizeVariant(sizeVariant) {
         // console.log(sizeVariant);
-        this.setState({selectedSizeVariant:sizeVariant})
+        this.setState({ selectedSizeVariant: sizeVariant })
     }
-    setColourVariant(colourVariant){
-        this.setState({selectedColorVariant:colourVariant})
+    setColourVariant(colourVariant) {
+        this.setState({ selectedColorVariant: colourVariant })
     }
     componentDidMount() {
         console.log("Im detail comp")
@@ -133,13 +134,13 @@ class DetailPhoneComponent extends Component {
     }
     render() {
         const colourVariants = Object.keys(this.state.mobilePhone.colourVariant).map(color =>
-            <span className="btn btn-outline-primary font-weight-light text-capitalize mr-1 " onClick={this.setColourVariant.bind(this,this.state.mobilePhone.colourVariant[color])}>
+            <span className="btn btn-outline-primary font-weight-light text-capitalize mr-1 " onClick={this.setColourVariant.bind(this, this.state.mobilePhone.colourVariant[color])}>
                 {this.state.mobilePhone.colourVariant[color]}
             </span>
         );
 
         const tifOptions = Object.keys(this.state.mobilePhone.sizeVariant).map(key =>
-            <span value={key} className="btn btn-outline-primary font-weight-light text-capitalize mr-1" onClick={this.setSizeVariant.bind(this,this.state.mobilePhone.sizeVariant[key])} >
+            <span value={key} className="btn btn-outline-primary font-weight-light text-capitalize mr-1" onClick={this.setSizeVariant.bind(this, this.state.mobilePhone.sizeVariant[key])} >
                 {this.state.mobilePhone.sizeVariant[key]}
             </span>
         )

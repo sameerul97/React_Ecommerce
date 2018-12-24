@@ -8,19 +8,21 @@ import ErrorComponent from "./components/errorComponent";
 import LoginComponent from "./components/loginComponent"
 import UserDashboardComponent from "./components/userDashboard"
 import decode from "jwt-decode";
-
+import authservice from "./services/authenticationService";
+   
 const Index = () => <HomePageComponent></HomePageComponent>;
 const About = () => <AboutPageComponent></AboutPageComponent>;
 const AllPhones = () => <AllPhonesComponent></AllPhonesComponent>;
 const DetailPhone = () => <DetailPhoneComponent></DetailPhoneComponent>;
 const Login = () => <LoginComponent></LoginComponent>;
 const UserDashboard = () => <UserDashboardComponent></UserDashboardComponent>;
-const NoMatch = () => <ErrorComponent></ErrorComponent>
+const NoMatch = () => <ErrorComponent></ErrorComponent>;
 // const Users = () => <h2>Users</h2>;
 const state = {
-    isLoggedIn: false
+    isLoggedIn: authservice.isAuthenticated()
 }
 const authenticated = () => {
+
     const token = localStorage.getItem('token');
     if (!token) {
         console.log("HEr")
@@ -32,6 +34,9 @@ const authenticated = () => {
         console.log(expiration)
         console.log(expiration.exp)
         if (expiration.exp < new Date().getTime() / 1000) {
+            // loginService.setTrue();
+
+            state.isLoggedIn = authservice.isAuthenticated();
             return false;
         }
 
@@ -103,7 +108,7 @@ const AppRouter = () => (
                     </ul>
 
                     <ul className="navbar-nav ml-auto">
-                        {authenticated() &&
+                        {authservice.isAuthenticated() &&
                             <li className="nav-item dropdown">
                                 <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
                                     aria-haspopup="true" aria-expanded="false">
@@ -116,24 +121,24 @@ const AppRouter = () => (
 
                             </li>
                         }
-                        {!state.isLoggedIn &&
+                        {!authservice.isAuthenticated() &&
                             <li className="nav-item" >
                                 <a className="nav-link" routerLink="/register">Register</a>
                             </li>
                         }
-                        {!state.isLoggedIn &&
+                        {!authservice.isAuthenticated() &&
 
                             <li className="nav-item" >
                                 <a className="nav-link" routerLink="/login">Login</a>
                             </li>
                         }
-                        {state.isLoggedIn &&
+                        {authservice.isAuthenticated() &&
                             <li className="nav-item" >
                                 <a className="nav-link" routerLink="/basket">My Basket
                             </a>
                             </li>
                         }
-                        {state.isLoggedIn &&
+                        {authservice.isAuthenticated() &&
 
                             <li className="nav-item">
                                 <a className="nav-link" routerLink="/home">Sign Out</a>

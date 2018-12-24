@@ -1,6 +1,10 @@
-import decode from "jwt-decode";
-
-const authenticated = () => {
+import decode from "../../node_modules/jwt-decode";
+function loginService() {
+    console.log("H")
+    return true;
+}
+// const authenticated = () => {
+function authenticated() {
     const token = localStorage.getItem('token');
     if (!token) {
         console.log("HEr")
@@ -21,3 +25,6 @@ const authenticated = () => {
 
     return true;
 }
+module.exports = {
+    myloginservice: loginService, authenticated
+};

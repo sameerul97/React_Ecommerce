@@ -32,7 +32,7 @@ function isAuthenticated() {
         mode: "cors", // no-cors, cors, *same-origin
         headers: {
             "Content-Type": 'application/x-www-form-urlencoded',
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7InVzZXJfSWQiOiI1YzE3ZDU1NmE5MzAwODBiNjAzMjU1N2IiLCJuYW1lIjoic2FtIiwiZW1haWwiOiJzYW1lZXJ1bDk3QGdtYWlsLmNvbTMifSwiaWF0IjoxNTQ1NTg4OTcyLCJleHAiOjE1NDU1OTI1NzIsInN1YiI6InNhbSJ9.bBQSz5hKLy06RThPC3q_iczaVN8poJ8qCEHZRzq0_ig"
+            "Authorization": "Bearer "+ token
         },
     }).then(function (response) {
         return response.json();
