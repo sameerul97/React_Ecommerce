@@ -39,6 +39,7 @@ const authenticated = () => {
     console.log(expiration.exp)
     if (expiration.exp < new Date().getTime() / 1000) {
       // loginService.setTrue();
+      // this.setState({ logged: true })
 
       // state.isLoggedIn = true;
       return false;
@@ -74,6 +75,8 @@ class App extends Component {
     super(props);
     this.state = { logged: false }
     this.TokenData = localStorage.getItem("token");
+
+    // console.log(this.state)
     // this.logOutFn = this.logOutFn.bind(this);
     this.updateLink = this.updateLink.bind(this);
   }
@@ -89,7 +92,13 @@ class App extends Component {
     this.setState({ logged: true })
     // this.setState({ word: 'bar' })
   }
-
+  componentDidMount(){
+    if(this.TokenData != null){
+      this.setState({
+        logged : true
+      })
+    }
+  }
 
   render() {
     const name = 'Sam';
@@ -155,8 +164,7 @@ class App extends Component {
                   }
                   {this.state.logged &&
                     <li className="nav-item" >
-                      <a className="nav-link" routerLink="/basket">My Basket
-                            </a>
+                      <Link to="/basket" className="nav-link">My Basket</Link>
                     </li>
                   }
                   {this.state.logged &&

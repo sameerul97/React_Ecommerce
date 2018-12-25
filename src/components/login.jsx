@@ -68,6 +68,8 @@ class LoginComponent extends Component {
                     this.setState({
                         serverResponse: myJson.Message
                     })
+                    this.props.history.push("/userDashboard" )
+
                 }
                 this.setState({
                     serverResponse: myJson.Message
