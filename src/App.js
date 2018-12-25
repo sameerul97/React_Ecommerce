@@ -147,7 +147,6 @@ class App extends Component {
                       <a className="nav-link" routerLink="/register">Register</a>
                     </li>
                   }
-                  {button}
                   {!this.state.logged &&
 
                     <li className="nav-item" >
