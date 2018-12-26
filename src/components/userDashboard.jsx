@@ -1,18 +1,142 @@
 import React, { Component } from 'react';
-import "./userDashboard.css"
+import "./userDashboard.css";
+import { withRouter } from "react-router-dom";
+
 class UserDashboardComponent extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            wishedItems : [],
+            ordererdItems: [{
+                mobileId: "",
+                mobileImageUrl: "",
+                mobileName: "",
+                mobilePrice: "",
+                orderedAt: "",
+                userId: "",
+                __v: "",
+                _id: "",
+            }],
             username: localStorage.getItem("name"),
-            email: localStorage.getItem("email")
-        }
+            email: localStorage.getItem("email"),
+        };
+    }
+
+    testFunction(mobileId) {
+        console.log(mobileId);
+        this.props.history.push("/detailPhone/" + mobileId)
+    }
+    componentDidMount() {
+        const token = localStorage.getItem('token');
+        const userId = localStorage.getItem("userId")
+        console.log(token)
+        fetch("http://localhost:3000/myOrders/" + userId, {
+            method: "GET", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, cors, *same-origin
+            headers: {
+                "Content-Type": 'application/x-www-form-urlencoded',
+                "Authorization": "Bearer " + token
+            },
+        }).then(function (response) {
+            return response.json();
+        })
+            // .then(response => response.json())
+            .then(myJson => {
+                console.log((myJson));
+                console.log((myJson.Orders));
+                if (myJson.Orders != "None") {
+                    this.setState({ ordererdItems: myJson.Orders })
+                    console.log(this.state);
+                    this.state.ordererdItems.forEach(element => {
+                        console.log(element)
+                    });
+                }
+            })
+            fetch("http://localhost:3000/myWishedProduct/" + userId, {
+                method: "GET", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, cors, *same-origin
+                headers: {
+                    "Content-Type": 'application/x-www-form-urlencoded',
+                    "Authorization": "Bearer " + token
+                },
+            }).then(function (response) {
+                return response.json();
+            })
+                // .then(response => response.json())
+                .then(myJson => {
+                    console.log((myJson));
+                    console.log((myJson.result));
+                    // if (myJson.result != "None") {
+                        this.setState({ wishedItems: myJson.result })
+                        console.log(this.state);
+                        // this.state.ordererdItems.forEach(element => {
+                        //     console.log(element)
+                        // });
+                    // }
+                })
+        // fetch("http://localhost:3000/allPhones")
+        //     .then(function (response) {
+        //         return response.json();
+        //     })
+        //     .then(function (myJson) {
+        //         console.log((myJson.result));
+
+        //         return myJson.result;
+        //     })
+        //     .then(mostlyWished => {
+        //         this.setState({ mobilePhones: mostlyWished })
+        //     })
     }
     render() {
         const imageStyle = {
             width: "100 %",
             height: "80vh"
         };
+        const { ordererdItems } = this.state;
+
+        const myOrders = this.state.ordererdItems.map((phone) =>
+            <div className="col-12 col-md-6 col-lg-3 d-flex p-2" key={phone.mobileId} >
+                <div className="card flex-fill shadow-sm"  >
+                    <div class="card-header text-primary">
+                        {phone.mobileName}
+                    </div>
+                    <div class="view overlay">
+                        <img class="img-thumbnail" src={phone.mobileImageUrl} alt="Card image cap" />
+                    </div>
+                    <div class="card-body">
+                        <span class="text-primary font-weight-light ">£{phone.mobilePrice}</span>
+                        <div>
+                            <a class=" btn btn-info text-white">Buy Again
+                            </a>
+                        </div>
+                    </div>
+                    <div class="card-footer text-muted">
+                        <p>Ordered on: {phone.orderedAt}</p>
+                    </div>
+                </div>
+            </div>
+        );
+        const { wishedItems } = this.state;
+
+        const myWishedItems = wishedItems.map((phone) =>
+        <div className="col-12 col-md-6 col-lg-3 d-flex p-2" key={phone.mobileId} >
+            <div className="card flex-fill shadow-sm"  >
+                <div class="card-header text-primary">
+                    {phone.mobileName}
+                </div>
+                <div class="view overlay">
+                    <img class="img-thumbnail" src={phone.mobileImageUrl} alt="Card image cap" />
+                </div>
+                <div class="card-body">
+                    <span class="text-primary font-weight-light ">£{phone.mobilePrice}</span>
+                    <div>
+                        <a class=" btn btn-info text-white">Buy Again
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
         return (
             <div className="container mt-2 mb-2">
                 <nav>
@@ -75,10 +199,20 @@ class UserDashboardComponent extends Component {
                         </div>
                     </div>
                     <div className="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                        sam
+                        <div className="container text-center">
+                            <div className="row" >
+                                {myOrders}
+
+                            </div>
+                        </div>
                     </div>
                     <div className="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
-                        sam
+                        <div className="container text-center">
+                            <div className="row">
+                                {myWishedItems}
+                            </div>
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -86,4 +220,4 @@ class UserDashboardComponent extends Component {
     }
 }
 
-export default UserDashboardComponent;
+export default withRouter(UserDashboardComponent);

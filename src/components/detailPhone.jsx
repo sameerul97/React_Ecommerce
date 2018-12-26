@@ -11,7 +11,7 @@ class DetailPhoneComponent extends Component {
         // var className = new myClass;
         console.log(this.props.userIsLoggedIn)
         console.log(authservice.authservice())
-        console.log(authservice.setData("BOIII"));
+        // console.log(authservice.setData("BOIII"));
         console.log(authservice.authservice());
 
         this.state = {
@@ -36,9 +36,11 @@ class DetailPhoneComponent extends Component {
                 },
                 imageUrl: ""
             },
+            success : false,
             selectedSizeVariant: "",
             selectedColorVariant: ""
         };
+        this.addToBasket = this.addToBasket.bind(this)
     }
     setSizeVariant(sizeVariant) {
         // console.log(sizeVariant);
@@ -46,6 +48,72 @@ class DetailPhoneComponent extends Component {
     }
     setColourVariant(colourVariant) {
         this.setState({ selectedColorVariant: colourVariant })
+    }
+    addToBasket(phone){
+        console.log(phone)
+        const token = localStorage.getItem('token');
+        const userId = localStorage.getItem("userId")
+        console.log(token, phone);
+        // Requires:  userId,mobileId,mobileName,mobilePrice,mobileImageUrl
+        // var userId = localStorage.getItem("userId")
+        var mobileId = phone.mobileId;
+        var mobileName = phone.mobileName;
+        var mobilePrice = phone.mobilePrice;
+        var mobileImageUrl = phone.imageUrl;
+        fetch("http://localhost:3000/basket", {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, cors, *same-origin
+            headers: {
+                "Content-Type": 'application/x-www-form-urlencoded',
+                "Authorization": "Bearer " + token
+            },
+            body: new URLSearchParams("userId=" + userId +
+                "&mobileId=" + mobileId +
+                "&mobileName=" + mobileName +
+                "&mobilePrice=" + mobilePrice +
+                "&mobileImageUrl=" + mobileImageUrl), // body data type must match "Content-Type" header
+
+        }).then(function (response) {
+            return response.json();
+        }).then(myJson => {
+            // console.log(myJson);
+            this.setState({ success: true })
+            setTimeout(
+                function () {
+                    this.setState({ success: false });
+                }
+                    .bind(this),
+                3000
+            );            
+        })
+    }
+    addToWishlist(phone){
+        var userId = localStorage.getItem("userId");
+        var token = localStorage.getItem("token")
+        var mobileId = phone.mobileId;
+        fetch("http://localhost:3000/myWishedProduct", {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, cors, *same-origin
+            headers: {
+                "Content-Type": 'application/x-www-form-urlencoded',
+                "Authorization": "Bearer " + token
+            },
+            body: new URLSearchParams("userId=" + userId +
+                "&mobileId=" + mobileId), // body data type must match "Content-Type" header
+
+        }).then(function (response) {
+            return response.json();
+        }).then(myJson => {
+            // console.log(myJson);
+            this.setState({ success: true })
+            setTimeout(
+                function () {
+                    this.setState({ success: false });
+                }
+                    .bind(this),
+                3000
+            );            
+        })
     }
     componentDidMount() {
         console.log("Im detail comp")
@@ -123,12 +191,61 @@ class DetailPhoneComponent extends Component {
             </tr>
         )
         const phone = this.state.mobilePhone;
+        const postQuestion =
+            (
+                <div className="shadow p-3 mb-5 mt-4 bg-light rounded text-left">
+                    <p className="font-weight-bold">Post your question</p>
+                    <div class="form-group">
+                        {/* <p className="font-weight-bold">Qualty of camera ?</p> */}
+                        <textarea class="form-control" rows="5" id="comment"></textarea>
+                    </div>
+                    <button type="button" class="btn btn-primary">Post Question</button>
+
+                </div>
+            );
+        const postAnswer =
+            (
+                <div className="shadow p-3 mb-5 mt-4 bg-light rounded text-left">
+                    <p className="font-weight-light">Write your answer</p>
+                    <div class="form-group">
+                        <p className="font-weight-bold">Qualty of camera ?</p>
+                        <textarea class="form-control" rows="5" placeholder="your answer" id="comment"></textarea>
+                    </div>
+                    <button type="button" class="btn btn-primary">Post Answer</button>
+
+                </div>
+            );
+        const questionAndAnswer =
+            (
+                <div className="shadow  p-3 mb-5 mt-4 bg-light rounded text-left">
+                    <div className="border border-primary p-3 mb-5 mt-4 bg-light rounded">
+                        <p className="font-weight-bold">Qualty of camera ?</p>
+                        <p class="font-weight-normal">Decent camera, for the budget phone its decent.</p>
+                        <div className="card-footer text-muted">
+                            Answered by sam
+                    </div>
+                    </div>
+                    <div className="border border-primary p-3 mb-5 mt-4 bg-light rounded">
+                        <p className="font-weight-bold">Qualty of camera ?</p>
+                        <p class="font-weight-normal">Decent camera, for the budget phone its decent.</p>
+                        <div className="card-footer text-muted">
+                            Answered by sam
+                    </div>
+                    </div>
+                </div>
+
+            );
 
         return (
             <div>
                 {/* <h1>{samName}</h1> */}
                 <div className="detailPageBody bg-light">
                     <div className="container bg-white">
+                    {this.state.success &&
+                        <div className="alert alert-success mt-2" role="alert">
+                            Success
+                        </div>
+                    }
                         <div className="row p-3">
                             <div className=" col-md-6">
                                 <div className="imagePlaceHolder text-center">
@@ -166,17 +283,17 @@ class DetailPhoneComponent extends Component {
                                 </p>
                                 <div className="text-left">
 
-                                    <button type="button" className="btn btn-primary font-weight-bold text-center text-uppercase shadow-lg" >Add
+                                    <button type="button" onClick={this.addToBasket.bind(this, phone)} className="m-1 btn btn-primary font-weight-bold text-center text-uppercase shadow-lg" >Add
           to basket</button>
-                                    <button type="button" className="btn btn-primary font-weight-bold text-center text-uppercase shadow-lg">Add
+                                    <button type="button" onClick={this.addToWishlist.bind(this, phone)} className="m-1 btn btn-primary font-weight-bold text-center text-uppercase shadow-lg">Add
           to wish list</button>
                                 </div>
                             </div>
                         </div >
-                        <div className="shadow p-3 mb-5 mt-4 bg-light rounded">
-                            <p className=" font-weight-light text-capitalize text-center" style={{ fontSize: "1.5rem;" }}>Top Spec</p>
+                        <div className="shadow p-3 mb-5 mt-4 bg-light rounded border border-primary">
+                            <p className=" font-weight-light text-capitalize text-center" style={{ fontSize: 1.5 + "rem" }}>Top Spec</p>
 
-                            <div className="row text-center p-2">
+                            <div className="row text-center p-2 ">
                                 <div className="col">
                                     <i className="fas fa-camera fa-2x"></i>
                                     <p className="text-monospace font-weight-bold text-info">Camera</p>
@@ -209,8 +326,8 @@ class DetailPhoneComponent extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="shadow p-3 mb-5 bg-light rounded">
-                            <p className="font-weight-light text-capitalize text-center" >Full Spec</p>
+                        <div className="shadow p-3 mb-5 bg-light rounded border border-info">
+                            <p className="font-weight-light text-capitalize text-center" style={{ fontSize: 1.5 + "rem" }} >Full Spec</p>
                             <table className="table table-striped">
 
                                 <tbody>
@@ -218,10 +335,16 @@ class DetailPhoneComponent extends Component {
                                 </tbody>
                             </table>
                         </div>
-                    </div >
+                        <p className="font-weight-light">Question And Answer</p>
+                        {questionAndAnswer}
+                        <p className="font-weight-light">Post question</p>
+                        {postQuestion}
+                        <p className="font-weight-light">Post answer</p>
+                        {postAnswer}
+                    </div>
 
-                </div >
-            </div >
+                </div>
+            </div>
         )
     }
 

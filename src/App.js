@@ -9,6 +9,7 @@ import DetailPhoneComponent from "./components/detailPhone";
 import ErrorComponent from "./components/errorComponent";
 import LoginComponent from "./components/login";
 import UserDashboardComponent from "./components/userDashboard";
+import Register from "./components/register"
 import Basket from "./components/basket";
 import decode from "jwt-decode";
 // import authservice from "./services/authenticationService";
@@ -80,26 +81,45 @@ class App extends Component {
     // this.logOutFn = this.logOutFn.bind(this);
     this.updateLink = this.updateLink.bind(this);
   }
-  updateLink() {
-    // console.log("cald");
-    // if(localStorage.getItem("token") !== undefined)
-    // {
 
-    // }
-  }
   updateLink = () => {
     console.log("updating");
     this.setState({ logged: true })
-    // this.setState({ word: 'bar' })
   }
-  componentDidMount(){
-    if(this.TokenData != null){
+  componentDidMount() {
+    if (localStorage.getItem("token") != null) {
+      try {
+        const expiration = decode(localStorage.getItem("token"));
+        if (expiration.exp < new Date().getTime() / 1000) {
+          this.setState({
+            logged: false
+          })
+        }
+        else {
+          this.setState({
+            logged: true
+          })
+        }
+      } catch (error) {
+        // invalid token format
+      }
+
+    } else {
       this.setState({
-        logged : true
+        logged: false
       })
     }
-  }
 
+  }
+  signOut(){
+    console.log("Signing out");
+    localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('email');
+    localStorage.removeItem('userName');
+    this.setState({logged:false})
+    console.log("Signed Out");
+  }
   render() {
     const name = 'Sam';
     const isLoggedIn = this.state.logged;
@@ -115,11 +135,11 @@ class App extends Component {
       </li>
     }
     return (
-      <div className="App" mydata={this.state.userIsLoggedIn, this.state.name}>
+      <div className="App" >
         <Router>
           <div>
-            <nav className="navbar navbar-expand-lg navbar-dark bg-dark position-sticky">
-              <a className="navbar-brand" href="#">React Store</a>
+            <nav className="navbar navbar-expand-lg navbar-dark bg-info position-sticky shadow">
+              <Link to="/" className="navbar-brand">React Store</Link>
               <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
               </button>
@@ -130,10 +150,10 @@ class App extends Component {
                     <Link to="/" className="nav-link" >Home <span className="sr-only">(current)</span> </Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="/about/" className="nav-link">About</Link>
+                    <Link to="/allPhones/" className="nav-link">All Phones</Link>
                   </li>
                   <li className="nav-item">
-                    <Link to="/allPhones/" className="nav-link">All Phones</Link>
+                    <Link to="/about/" className="nav-link">About</Link>
                   </li>
                 </ul>
 
@@ -146,14 +166,14 @@ class App extends Component {
                       </a>
 
                       <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a className="nav-link text-dark" routerLink="/userDashboard">My Dashboard</a>
+                        <Link to="/userDashboard" className="nav-link text-dark">My Dashboard</Link>
                       </div>
 
                     </li>
                   }
                   {!this.state.logged &&
                     <li className="nav-item" >
-                      <a className="nav-link" routerLink="/register">Register</a>
+                      <Link to="/register" className="nav-link">Register</Link>
                     </li>
                   }
                   {!this.state.logged &&
@@ -169,7 +189,7 @@ class App extends Component {
                   }
                   {this.state.logged &&
                     <li className="nav-item">
-                      <a className="nav-link" routerLink="/home">Sign Out</a>
+                      <a className="nav-link" onClick={this.signOut.bind(this)} >Sign Out</a>
                     </li>
                   }
                 </ul>
@@ -180,6 +200,7 @@ class App extends Component {
               <Route path="/about/" component={About} />
               <Route path="/allPhones/" component={AllPhones} />
               <Route path="/detailPhone/:mobileid" component={DetailPhone} />
+              <Route path="/register" component={Register} />
               <Route path="/login" render={props => <LoginComponent updateLink={this.updateLink} isLogged={this.state.logged} {...props} />} />
               <PrivateRoute path="/userDashboard" component={UserDashboard} />
               <PrivateRoute path="/basket" component={Basket} />
@@ -191,7 +212,7 @@ class App extends Component {
           </div>
 
         </Router>
-{/* <h1>{name}</h1> */ }
+        {/* <h1>{name}</h1> */}
       </div >
     );
   }

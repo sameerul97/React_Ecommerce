@@ -23,21 +23,7 @@ img {
     height: 200px;
     border: none;
 }
-  .col1{
-    /* height:60vh;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url('https://images.unsplash.com/photo-1512499582704-623afeaf82c9?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjF9&auto=format&fit=crop&w=966&q=80');
-    background-attachment: fixed;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover; */
-}
 
-/* .titlePageText{
-    float: left;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-} */
 .titlePageTitle{
     font-size: 1rem;
     text-align: center;

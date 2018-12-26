@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import "./mostlyWished.css";
+import "./mostlyWished.css"
 import { withRouter } from "react-router-dom";
-
-class AllPhones extends Component {
+class MostlyReviewed extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            mobilePhones: [],
+            hits: [],
         };
     }
     testFunction(mobileId) {
@@ -15,7 +14,8 @@ class AllPhones extends Component {
         this.props.history.push("/detailPhone/" + mobileId)
     }
     componentDidMount() {
-        fetch("http://localhost:3000/allPhones")
+        const mostlyWishedArr = [];
+        fetch("http://localhost:3000/mostlyReviewed")
             .then(function (response) {
                 return response.json();
             })
@@ -24,13 +24,13 @@ class AllPhones extends Component {
                 return myJson.result;
             })
             .then(mostlyWished => {
-                this.setState({ mobilePhones: mostlyWished });
-                console.log(this.state)
+                this.setState({ hits: mostlyWished })
             })
     }
     render() {
-        const itemName = this.state.mobilePhones.map((phone) =>
-            <div className="col-12 col-md-6 col-lg-3 d-flex p-2" key={phone.mobileId} >
+        // card component
+        const itemName = this.state.hits.map((phone) =>
+            <div className="col d-flex" key={phone.mobileId} >
                 <div className="card flex-fill shadow-sm"  >
                     <div className="view overlay">
                         <img className="img-thumbnail" src={phone.mobileImageUrl} />
@@ -38,13 +38,12 @@ class AllPhones extends Component {
                     <div className="card-body">
                         {phone.mobileName}
                     </div>
-                    
                     <div className="card-footer text-muted ">
-                        <span className="float-left mt-1">
+                        <span className="float-center mt-1">
                             <span>{phone.mobilePrice}</span>
                         </span>
                         <span className="float-right">
-                            <a className=" btn btn-info btn-sm text-white" onClick={this.testFunction.bind(this, phone.mobileId)}>
+                            <a className=" btn btn-info text-white" onClick={this.testFunction.bind(this, phone.mobileId)}>
                                 <span>
                                     <i className="lnr lnr-cart"></i>
                                 </span>Select Phone</a>
@@ -55,16 +54,17 @@ class AllPhones extends Component {
         );
         return (
             <div>
-                <div className="text-center">
+                <div>
                     <div className="container">
+                        <div className="display-4 p-2 text-center">Mostly Reviewed</div>
                         <div className="row">
                             {itemName}
                         </div>
                     </div>
                 </div>
-            </div>
+            </div >
         )
     }
 }
 
-export default withRouter(AllPhones);
+export default withRouter(MostlyReviewed);
