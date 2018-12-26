@@ -14,6 +14,42 @@ class AllPhones extends Component {
         console.log(mobileId);
         this.props.history.push("/detailPhone/" + mobileId)
     }
+    getBestSelling(){
+        fetch("http://localhost:3000/bestSelling")
+        .then(function (response) {
+            return response.json();
+        }).then(myJson =>{
+            console.log(myJson)
+            this.setState({ mobilePhones : myJson.result})
+        })
+    }
+    getMostlyReviewed(){
+        fetch("http://localhost:3000/mostlyReviewed")
+        .then(function (response) {
+            return response.json();
+        }).then(myJson =>{
+            console.log(myJson)
+            this.setState({ mobilePhones : myJson.result})
+        })
+    }
+    getLowToHigh(){
+        fetch("http://localhost:3000/lowToHigh")
+        .then(function (response) {
+            return response.json();
+        }).then(myJson =>{
+            console.log(myJson)
+            this.setState({ mobilePhones : myJson.result})
+        })
+    }
+    getHighToLow(){
+        fetch("http://localhost:3000/highToLow")
+        .then(function (response) {
+            return response.json();
+        }).then(myJson =>{
+            console.log(myJson)
+            this.setState({ mobilePhones : myJson.result})
+        })
+    }
     componentDidMount() {
         fetch("http://localhost:3000/allPhones")
             .then(function (response) {
@@ -55,6 +91,34 @@ class AllPhones extends Component {
         );
         return (
             <div>
+                  <div className="container">
+                    <div className="row">
+                        <div className="col">
+                        <div className="p-3 mb-2 text-center">
+                            <button type="button" className="btn btn-outline-info m-1">Samsung</button>
+                            <button type="button" className="btn btn-outline-info m-1">Apple</button>
+                        </div>
+                        </div>
+                        <div className="col">
+                        <div className="p-3 mb-2 text-white">
+
+                            <div className="dropdown  text-left">
+                            <label className="text-body pr-1">Sort By</label>
+                            <button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                                Mix
+                            </button>
+                            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a className="dropdown-item" onClick={this.getLowToHigh.bind(this)}>Low to High</a>
+                                <a className="dropdown-item" onClick={this.getHighToLow.bind(this)}>High to Low</a>
+                                <a className="dropdown-item" onClick={this.getMostlyReviewed.bind(this)}>Mostly Reviewed</a>
+                                <a className="dropdown-item" onClick={this.getBestSelling.bind(this)} >Best Selling</a>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
                 <div className="text-center">
                     <div className="container">
                         <div className="row">
