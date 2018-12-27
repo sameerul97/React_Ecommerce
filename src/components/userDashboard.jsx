@@ -95,22 +95,22 @@ class UserDashboardComponent extends Component {
         const { ordererdItems } = this.state;
 
         const myOrders = this.state.ordererdItems.map((phone) =>
-            <div className="col-12 col-md-6 col-lg-3 d-flex p-2" key={phone.mobileId} >
+            <div className="col-12 col-md-6 col-lg-3 d-flex p-2" key={phone._id} >
                 <div className="card flex-fill shadow-sm"  >
-                    <div class="card-header text-primary">
+                    <div className="card-header text-primary">
                         {phone.mobileName}
                     </div>
-                    <div class="view overlay">
-                        <img class="img-thumbnail" src={phone.mobileImageUrl} alt="Card image cap" />
+                    <div className="view overlay">
+                        <img className="img-thumbnail" src={phone.mobileImageUrl} alt="Card image cap" />
                     </div>
-                    <div class="card-body">
-                        <span class="text-primary font-weight-light ">£{phone.mobilePrice}</span>
+                    <div className="card-body">
+                        <span className="text-primary font-weight-light ">£{phone.mobilePrice}</span>
                         <div>
-                            <a class=" btn btn-info text-white">Buy Again
+                            <a className=" btn btn-info text-white" onClick={this.testFunction.bind(this, phone.mobileId)} >Buy Again
                             </a>
                         </div>
                     </div>
-                    <div class="card-footer text-muted">
+                    <div className="card-footer text-muted">
                         <p>Ordered on: {phone.orderedAt}</p>
                     </div>
                 </div>
@@ -119,18 +119,18 @@ class UserDashboardComponent extends Component {
         const { wishedItems } = this.state;
 
         const myWishedItems = wishedItems.map((phone) =>
-        <div className="col-12 col-md-6 col-lg-3 d-flex p-2" key={phone.mobileId} >
+        <div className="col-12 col-md-6 col-lg-3 d-flex p-2" key={phone._id} >
             <div className="card flex-fill shadow-sm"  >
-                <div class="card-header text-primary">
+                <div className="card-header text-primary">
                     {phone.mobileName}
                 </div>
-                <div class="view overlay">
-                    <img class="img-thumbnail" src={phone.mobileImageUrl} alt="Card image cap" />
+                <div className="view overlay">
+                    <img className="img-thumbnail" src={phone.mobileImageUrl} alt="Card image cap" />
                 </div>
-                <div class="card-body">
-                    <span class="text-primary font-weight-light ">£{phone.mobilePrice}</span>
+                <div className="card-body">
+                    <span className="text-primary font-weight-light ">{phone.mobilePrice}</span>
                     <div>
-                        <a class=" btn btn-info text-white">Buy Again
+                        <a className=" btn btn-info text-white" onClick={this.testFunction.bind(this, phone.mobileId)} >Buy Now
                         </a>
                     </div>
                 </div>

@@ -39,10 +39,6 @@ const authenticated = () => {
     console.log(expiration)
     console.log(expiration.exp)
     if (expiration.exp < new Date().getTime() / 1000) {
-      // loginService.setTrue();
-      // this.setState({ logged: true })
-
-      // state.isLoggedIn = true;
       return false;
     }
 
@@ -74,14 +70,15 @@ function PrivateRoute({ component: Component, ...rest }) {
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { logged: false }
+    this.state = { logged: false, noOfItemsInBasket: "", userName: "" }
     this.TokenData = localStorage.getItem("token");
-
-    // console.log(this.state)
-    // this.logOutFn = this.logOutFn.bind(this);
     this.updateLink = this.updateLink.bind(this);
+    this.updateBasketNo = this.updateBasketNo.bind(this);
   }
-
+  updateBasketNo(num) {
+    this.setState({ noOfItemsInBasket: num });
+    this.setState({ userName: localStorage.getItem("name") })
+  }
   updateLink = () => {
     console.log("updating");
     this.setState({ logged: true })
@@ -99,41 +96,28 @@ class App extends Component {
           this.setState({
             logged: true
           })
+          this.setState({ userName: localStorage.getItem("name") })
         }
       } catch (error) {
-        // invalid token format
+        console.log(error)
       }
-
     } else {
       this.setState({
         logged: false
       })
     }
-
   }
-  signOut(){
+  signOut() {
     console.log("Signing out");
     localStorage.removeItem('token');
     localStorage.removeItem('userId');
     localStorage.removeItem('email');
     localStorage.removeItem('userName');
-    this.setState({logged:false})
+    this.setState({ logged: false })
+    this.setState({ userName: "" })
     console.log("Signed Out");
   }
   render() {
-    const name = 'Sam';
-    const isLoggedIn = this.state.logged;
-    let button;
-
-    if (isLoggedIn) {
-      button = <li className="nav-item" >
-        <a className="nav-link" >Temp Button True</a>
-      </li>
-    } else {
-      button = <li className="nav-item" >
-        <a className="nav-link" routerLink="/register">Temp Buttn False</a>
-      </li>
-    }
     return (
       <div className="App" >
         <Router>
@@ -162,13 +146,11 @@ class App extends Component {
                     <li className="nav-item dropdown">
                       <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
-                        {/* {userName} */}
+                        {this.state.userName}
                       </a>
-
                       <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                         <Link to="/userDashboard" className="nav-link text-dark">My Dashboard</Link>
                       </div>
-
                     </li>
                   }
                   {!this.state.logged &&
@@ -177,14 +159,13 @@ class App extends Component {
                     </li>
                   }
                   {!this.state.logged &&
-
                     <li className="nav-item" >
                       <Link to="/login" className="nav-link">Login</Link>
                     </li>
                   }
                   {this.state.logged &&
                     <li className="nav-item" >
-                      <Link to="/basket" className="nav-link">My Basket</Link>
+                      <Link to="/basket" className="nav-link">My Basket  <span className="badge badge-light">{this.state.noOfItemsInBasket}</span></Link>
                     </li>
                   }
                   {this.state.logged &&
@@ -201,16 +182,13 @@ class App extends Component {
               <Route path="/allPhones/" component={AllPhones} />
               <Route path="/detailPhone/:mobileid" component={DetailPhone} />
               <Route path="/register" component={Register} />
-              <Route path="/login" render={props => <LoginComponent updateLink={this.updateLink} isLogged={this.state.logged} {...props} />} />
+              <Route path="/login" render={props => <LoginComponent updateLink={this.updateLink} updateBasketNo={this.updateBasketNo} isLogged={this.state.logged} {...props} />} />
               <PrivateRoute path="/userDashboard" component={UserDashboard} />
               <PrivateRoute path="/basket" component={Basket} />
               {/* <PrivateRoute path="/userDashboard" component={UserDashboard} /> */}
               <Route component={NoMatch} />
             </Switch>
-
-
           </div>
-
         </Router>
         {/* <h1>{name}</h1> */}
       </div >

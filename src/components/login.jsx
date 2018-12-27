@@ -22,9 +22,9 @@ class LoginComponent extends Component {
     }
     componentDidMount() {
         console.log(this.props)
-
+        
         // console.log(this.props.updateLink);
-        // console.log(this.props.isLogged);
+        console.log(this.props.isLogged);
         // this.loginFunction();
         // var temp = this.props.isLoggedIn
         // this.setState({
@@ -68,6 +68,7 @@ class LoginComponent extends Component {
                     this.setState({
                         serverResponse: myJson.Message
                     })
+                    this.setNoOfItemsInBasket();
                     this.props.history.push("/userDashboard" )
 
                 }
@@ -77,6 +78,27 @@ class LoginComponent extends Component {
                 return myJson.MobileData;
             })
 
+    }
+    setNoOfItemsInBasket(){
+        var ba = this.props.updateBasketNo
+        const token = localStorage.getItem('token');
+        const userId = localStorage.getItem("userId")
+        console.log(token)
+        fetch("http://localhost:3000/basket/" + userId, {
+            method: "GET", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, cors, *same-origin
+            headers: {
+                "Content-Type": 'application/x-www-form-urlencoded',
+                "Authorization": "Bearer " + token
+            },
+        }).then(function (response) {
+            return response.json();
+        })
+            .then(myJson => {
+                if (myJson.basketItems != "None") {
+                 ba(myJson.basketItems.length)
+                }
+            })
     }
     handleSubmit(event) {
         // console.log("HS")

@@ -36,7 +36,8 @@ class DetailPhoneComponent extends Component {
                 },
                 imageUrl: ""
             },
-            success : false,
+            success: false,
+            loggInMessage: "",
             selectedSizeVariant: "",
             selectedColorVariant: ""
         };
@@ -49,71 +50,79 @@ class DetailPhoneComponent extends Component {
     setColourVariant(colourVariant) {
         this.setState({ selectedColorVariant: colourVariant })
     }
-    addToBasket(phone){
+    addToBasket(phone) {
         console.log(phone)
         const token = localStorage.getItem('token');
         const userId = localStorage.getItem("userId")
-        console.log(token, phone);
-        // Requires:  userId,mobileId,mobileName,mobilePrice,mobileImageUrl
-        // var userId = localStorage.getItem("userId")
-        var mobileId = phone.mobileId;
-        var mobileName = phone.mobileName;
-        var mobilePrice = phone.mobilePrice;
-        var mobileImageUrl = phone.imageUrl;
-        fetch("http://localhost:3000/basket", {
-            method: "POST", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, cors, *same-origin
-            headers: {
-                "Content-Type": 'application/x-www-form-urlencoded',
-                "Authorization": "Bearer " + token
-            },
-            body: new URLSearchParams("userId=" + userId +
-                "&mobileId=" + mobileId +
-                "&mobileName=" + mobileName +
-                "&mobilePrice=" + mobilePrice +
-                "&mobileImageUrl=" + mobileImageUrl), // body data type must match "Content-Type" header
+        // console.log(token, phone);
+        if (userId != null) {
+            // Requires:  userId,mobileId,mobileName,mobilePrice,mobileImageUrl
+            // var userId = localStorage.getItem("userId")
+            var mobileId = phone.mobileId;
+            var mobileName = phone.mobileName;
+            var mobilePrice = phone.mobilePrice;
+            var mobileImageUrl = phone.imageUrl;
+            fetch("http://localhost:3000/basket", {
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, cors, *same-origin
+                headers: {
+                    "Content-Type": 'application/x-www-form-urlencoded',
+                    "Authorization": "Bearer " + token
+                },
+                body: new URLSearchParams("userId=" + userId +
+                    "&mobileId=" + mobileId +
+                    "&mobileName=" + mobileName +
+                    "&mobilePrice=" + mobilePrice +
+                    "&mobileImageUrl=" + mobileImageUrl), // body data type must match "Content-Type" header
 
-        }).then(function (response) {
-            return response.json();
-        }).then(myJson => {
-            // console.log(myJson);
-            this.setState({ success: true })
-            setTimeout(
-                function () {
-                    this.setState({ success: false });
-                }
-                    .bind(this),
-                3000
-            );            
-        })
+            }).then(function (response) {
+                return response.json();
+            }).then(myJson => {
+                // console.log(myJson);
+                this.setState({ success: true })
+                setTimeout(
+                    function () {
+                        this.setState({ success: false });
+                    }
+                        .bind(this),
+                    3000
+                );
+            })
+        } else {
+            this.setState({ loggInMessage: "Please Login Before continuing" })
+        }
     }
-    addToWishlist(phone){
+    addToWishlist(phone) {
         var userId = localStorage.getItem("userId");
         var token = localStorage.getItem("token")
-        var mobileId = phone.mobileId;
-        fetch("http://localhost:3000/myWishedProduct", {
-            method: "POST", // *GET, POST, PUT, DELETE, etc.
-            mode: "cors", // no-cors, cors, *same-origin
-            headers: {
-                "Content-Type": 'application/x-www-form-urlencoded',
-                "Authorization": "Bearer " + token
-            },
-            body: new URLSearchParams("userId=" + userId +
-                "&mobileId=" + mobileId), // body data type must match "Content-Type" header
+        if (userId != null) {
+            var mobileId = phone.mobileId;
+            fetch("http://localhost:3000/myWishedProduct", {
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, cors, *same-origin
+                headers: {
+                    "Content-Type": 'application/x-www-form-urlencoded',
+                    "Authorization": "Bearer " + token
+                },
+                body: new URLSearchParams("userId=" + userId +
+                    "&mobileId=" + mobileId), // body data type must match "Content-Type" header
 
-        }).then(function (response) {
-            return response.json();
-        }).then(myJson => {
-            // console.log(myJson);
-            this.setState({ success: true })
-            setTimeout(
-                function () {
-                    this.setState({ success: false });
-                }
-                    .bind(this),
-                3000
-            );            
-        })
+            }).then(function (response) {
+                return response.json();
+            }).then(myJson => {
+                // console.log(myJson);
+                this.setState({ success: true })
+                setTimeout(
+                    function () {
+                        this.setState({ success: false });
+                    }
+                        .bind(this),
+                    3000
+                );
+            })
+        } else {
+            this.setState({ loggInMessage: "Please Login Before continuing" })
+        }
     }
     componentDidMount() {
         console.log("Im detail comp")
@@ -195,11 +204,11 @@ class DetailPhoneComponent extends Component {
             (
                 <div className="shadow p-3 mb-5 mt-4 bg-light rounded text-left">
                     <p className="font-weight-bold">Post your question</p>
-                    <div class="form-group">
+                    <div className="form-group">
                         {/* <p className="font-weight-bold">Qualty of camera ?</p> */}
-                        <textarea class="form-control" rows="5" id="comment"></textarea>
+                        <textarea className="form-control" rows="5" id="comment"></textarea>
                     </div>
-                    <button type="button" class="btn btn-primary">Post Question</button>
+                    <button type="button" className="btn btn-primary">Post Question</button>
 
                 </div>
             );
@@ -207,11 +216,11 @@ class DetailPhoneComponent extends Component {
             (
                 <div className="shadow p-3 mb-5 mt-4 bg-light rounded text-left">
                     <p className="font-weight-light">Write your answer</p>
-                    <div class="form-group">
+                    <div className="form-group">
                         <p className="font-weight-bold">Qualty of camera ?</p>
-                        <textarea class="form-control" rows="5" placeholder="your answer" id="comment"></textarea>
+                        <textarea className="form-control" rows="5" placeholder="your answer" id="comment"></textarea>
                     </div>
-                    <button type="button" class="btn btn-primary">Post Answer</button>
+                    <button type="button" className="btn btn-primary">Post Answer</button>
 
                 </div>
             );
@@ -220,14 +229,14 @@ class DetailPhoneComponent extends Component {
                 <div className="shadow  p-3 mb-5 mt-4 bg-light rounded text-left">
                     <div className="border border-primary p-3 mb-5 mt-4 bg-light rounded">
                         <p className="font-weight-bold">Qualty of camera ?</p>
-                        <p class="font-weight-normal">Decent camera, for the budget phone its decent.</p>
+                        <p className="font-weight-normal">Decent camera, for the budget phone its decent.</p>
                         <div className="card-footer text-muted">
                             Answered by sam
                     </div>
                     </div>
                     <div className="border border-primary p-3 mb-5 mt-4 bg-light rounded">
                         <p className="font-weight-bold">Qualty of camera ?</p>
-                        <p class="font-weight-normal">Decent camera, for the budget phone its decent.</p>
+                        <p className="font-weight-normal">Decent camera, for the budget phone its decent.</p>
                         <div className="card-footer text-muted">
                             Answered by sam
                     </div>
@@ -239,13 +248,18 @@ class DetailPhoneComponent extends Component {
         return (
             <div>
                 {/* <h1>{samName}</h1> */}
-                <div className="detailPageBody bg-light">
+                <div className="detailPageBody bg-light mt-2">
                     <div className="container bg-white">
-                    {this.state.success &&
-                        <div className="alert alert-success mt-2" role="alert">
-                            Success
+                        {this.state.success &&
+                            <div className="alert alert-success mt-2" role="alert">
+                                Success
                         </div>
-                    }
+                        }
+                        {this.state.loggInMessage.length > 0 &&
+                            <div className="alert alert-success mt-2" role="alert">
+                                {this.state.loggInMessage}
+                            </div>
+                        }
                         <div className="row p-3">
                             <div className=" col-md-6">
                                 <div className="imagePlaceHolder text-center">

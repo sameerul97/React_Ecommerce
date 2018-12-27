@@ -17,3 +17,17 @@ img {
 .card-body{
     color:#2572C8;
 }
+/* .view {
+    overflow: hidden;
+  }
+
+  .view>img {
+    transition: all 0.5s;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+  }
+.view>img:hover {
+    opacity: 0.9;
+    transform: scale(1.1);
+  } */

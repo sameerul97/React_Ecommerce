@@ -96,7 +96,7 @@ class basketComponent extends Component {
         const myBasket = this.state.itemInBasket.map((phone) =>
             <div className="col-12 col-md-6 col-lg-3 d-flex p-2" key={phone._id} >
                 <div className="card flex-fill shadow-sm"  >
-                    <div className="card-header text-primary">
+                    <div className="card-header text-primary" onClick={this.testFunction.bind(this, phone.mobileId)} >
                         {phone.mobileName}
                     </div>
                     <div className="view overlay">
