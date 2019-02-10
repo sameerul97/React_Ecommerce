@@ -133,9 +133,13 @@ class basketComponent extends Component {
                             success, your order has been placed
                             </div>
                     }
-                    <div className="row">
-                        {myBasket}
-                    </div>
+                    {this.state.itemInBasket.length > 0 ? (
+                        < div className="row">
+                            {myBasket}
+                        </div>
+                    ) : <div class="display-4">No Items in basket</div>
+                    }
+
                 </div>
             </div >
         )
