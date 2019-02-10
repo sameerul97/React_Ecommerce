@@ -73,6 +73,7 @@ class App extends Component {
     this.state = { logged: false, noOfItemsInBasket: "", userName: "" }
     this.TokenData = localStorage.getItem("token");
     this.updateLink = this.updateLink.bind(this);
+    this.signOut = this.signOut.bind(this);
     this.updateBasketNo = this.updateBasketNo.bind(this);
   }
   updateBasketNo(num) {
@@ -123,6 +124,7 @@ class App extends Component {
         <Router>
           <div>
             <nav className="navbar navbar-expand-lg navbar-dark bg-info position-sticky shadow">
+            <div className="container">
               <Link to="/" className="navbar-brand">React Store</Link>
               <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
@@ -175,6 +177,7 @@ class App extends Component {
                   }
                 </ul>
               </div>
+              </div>
             </nav>
             <Switch>
               <Route path="/" exact component={Index} />
@@ -182,7 +185,7 @@ class App extends Component {
               <Route path="/allPhones/" component={AllPhones} />
               <Route path="/detailPhone/:mobileid" component={DetailPhone} />
               <Route path="/register" component={Register} />
-              <Route path="/login" render={props => <LoginComponent updateLink={this.updateLink} updateBasketNo={this.updateBasketNo} isLogged={this.state.logged} {...props} />} />
+              <Route path="/login" render={props => <LoginComponent signOut={this.signOut} updateLink={this.updateLink} updateBasketNo={this.updateBasketNo} isLogged={this.state.logged} {...props} />} />
               <PrivateRoute path="/userDashboard" component={UserDashboard} />
               <PrivateRoute path="/basket" component={Basket} />
               {/* <PrivateRoute path="/userDashboard" component={UserDashboard} /> */}

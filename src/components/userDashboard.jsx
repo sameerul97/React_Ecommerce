@@ -6,7 +6,7 @@ class UserDashboardComponent extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            wishedItems : [],
+            wishedItems: [],
             ordererdItems: [{
                 mobileId: "",
                 mobileImageUrl: "",
@@ -52,40 +52,29 @@ class UserDashboardComponent extends Component {
                     });
                 }
             })
-            fetch("http://localhost:3000/myWishedProduct/" + userId, {
-                method: "GET", // *GET, POST, PUT, DELETE, etc.
-                mode: "cors", // no-cors, cors, *same-origin
-                headers: {
-                    "Content-Type": 'application/x-www-form-urlencoded',
-                    "Authorization": "Bearer " + token
-                },
-            }).then(function (response) {
-                return response.json();
+        fetch("http://localhost:3000/myWishedProduct/" + userId, {
+            method: "GET", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, cors, *same-origin
+            headers: {
+                "Content-Type": 'application/x-www-form-urlencoded',
+                "Authorization": "Bearer " + token
+            },
+        }).then(function (response) {
+            return response.json();
+        })
+            // .then(response => response.json())
+            .then(myJson => {
+                console.log((myJson));
+                console.log((myJson.result));
+                // if (myJson.result != "None") {
+                this.setState({ wishedItems: myJson.result })
+                console.log(this.state);
+                // this.state.ordererdItems.forEach(element => {
+                //     console.log(element)
+                // });
+                // }
             })
-                // .then(response => response.json())
-                .then(myJson => {
-                    console.log((myJson));
-                    console.log((myJson.result));
-                    // if (myJson.result != "None") {
-                        this.setState({ wishedItems: myJson.result })
-                        console.log(this.state);
-                        // this.state.ordererdItems.forEach(element => {
-                        //     console.log(element)
-                        // });
-                    // }
-                })
-        // fetch("http://localhost:3000/allPhones")
-        //     .then(function (response) {
-        //         return response.json();
-        //     })
-        //     .then(function (myJson) {
-        //         console.log((myJson.result));
 
-        //         return myJson.result;
-        //     })
-        //     .then(mostlyWished => {
-        //         this.setState({ mobilePhones: mostlyWished })
-        //     })
     }
     render() {
         const imageStyle = {
@@ -119,24 +108,24 @@ class UserDashboardComponent extends Component {
         const { wishedItems } = this.state;
 
         const myWishedItems = wishedItems.map((phone) =>
-        <div className="col-12 col-md-6 col-lg-3 d-flex p-2" key={phone._id} >
-            <div className="card flex-fill shadow-sm"  >
-                <div className="card-header text-primary">
-                    {phone.mobileName}
-                </div>
-                <div className="view overlay">
-                    <img className="img-thumbnail" src={phone.mobileImageUrl} alt="Card image cap" />
-                </div>
-                <div className="card-body">
-                    <span className="text-primary font-weight-light ">{phone.mobilePrice}</span>
-                    <div>
-                        <a className=" btn btn-info text-white" onClick={this.testFunction.bind(this, phone.mobileId)} >Buy Now
+            <div className="col-12 col-md-6 col-lg-3 d-flex p-2" key={phone._id} >
+                <div className="card flex-fill shadow-sm"  >
+                    <div className="card-header text-primary">
+                        {phone.mobileName}
+                    </div>
+                    <div className="view overlay">
+                        <img className="img-thumbnail" src={phone.mobileImageUrl} alt="Card image cap" />
+                    </div>
+                    <div className="card-body">
+                        <span className="text-primary font-weight-light ">{phone.mobilePrice}</span>
+                        <div>
+                            <a className=" btn btn-info text-white" onClick={this.testFunction.bind(this, phone.mobileId)} >Buy Now
                         </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    );
+        );
         return (
             <div className="container mt-2 mb-2">
                 <nav>

@@ -73,7 +73,6 @@ class basketComponent extends Component {
                 3000
             );
             this.deleteItemInBasket(phone, token);
-            
         })
     }
     deleteItemInBasket(phone, token) {

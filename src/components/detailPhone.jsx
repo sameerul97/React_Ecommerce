@@ -8,10 +8,8 @@ import authservice from "../services/authenticationService";
 class DetailPhoneComponent extends Component {
     constructor(props) {
         super(props);
-        // var className = new myClass;
         console.log(this.props.userIsLoggedIn)
         console.log(authservice.authservice())
-        // console.log(authservice.setData("BOIII"));
         console.log(authservice.authservice());
 
         this.state = {
@@ -39,46 +37,128 @@ class DetailPhoneComponent extends Component {
             success: false,
             loggInMessage: "",
             selectedSizeVariant: "",
-            selectedColorVariant: ""
+            selectedColorVariant: "",
+            tokenValidationBool: "",
+            reviewStarCount: [1, 2, 3, 4, 5],
+            givenStar: 0,
+            userReviews: [],
+            totalReviewCount: 0,
+            userGivenStar: 0,
+            userGivenOpinion: "",
+            oneStars: 0, 
+            twoStars: 0,
+            threeStars: 0,
+            fourStars: 0,
+            fiveStars: 0
+            //  [{noOfStars: "",
+            // opinion: "",
+            // userId: "",
+            // userName: ""}]
         };
-        this.addToBasket = this.addToBasket.bind(this)
+        this.addToBasket = this.addToBasket.bind(this);
+        this.myFunction = this.myFunction.bind(this);
+        this.sendReview = this.sendReview.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+    }
+    myFunction(e) {
+        this.setState({ userGivenStar: e.target.value })
+    }
+    handleChange(event) {
+        this.setState({ userGivenOpinion: event.target.value });
     }
     setSizeVariant(sizeVariant) {
-        // console.log(sizeVariant);
         this.setState({ selectedSizeVariant: sizeVariant })
     }
     setColourVariant(colourVariant) {
         this.setState({ selectedColorVariant: colourVariant })
     }
+    checkTokenValidation() {
+        fetch("http://localhost:3000/checkToken", {
+            method: "GET", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, cors, *same-origin
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                Authorization: "Bearer " + localStorage.getItem("token")
+            }
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(myJson => {
+                this.setState({ tokenValidationBool: myJson.Message })
+                return this.state.tokenValidationBool;
+            });
+        return this.state.tokenValidationBool;
+    }
+    sendReview(event) {
+        this.setState({ userGivenOpinion: event.target.value });
+        const token = localStorage.getItem('token');
+        const userId = localStorage.getItem("userId");
+        console.log(this.checkTokenValidation());
+        if (this.checkTokenValidation()) {
+            fetch("http://localhost:3000/writeMyReview/", {
+                method: "POST", // *GET, POST, PUT, DELETE, etc.
+                mode: "cors", // no-cors, cors, *same-origin
+                headers: {
+                    "Content-Type": 'application/x-www-form-urlencoded',
+                    "Authorization": "Bearer " + token
+                },
+                body: new URLSearchParams("userId=" + userId +
+                    "&userName=" + localStorage.getItem("name") +
+                    "&noOfStars=" + this.state.userGivenStar +
+                    "&opinionText=" + this.state.userGivenOpinion + // body data type must match "Content-Type" header
+                    "&mobileId=" + this.state.mobilePhone.mobileId), // body data type must match "Content-Type" header
+
+            }).then(function (response) {
+                return response.json();
+            }).then(myJson => {
+                console.log(myJson);
+            })
+        } else {
+            this.setState({ loggInMessage: "Please Login Before continuing" })
+            setTimeout(
+                function () {
+                    this.setState({ loggInMessage: "" })
+                }.bind(this),
+                2000
+            );
+        }
+    }
     addToBasket(phone) {
         console.log(phone)
         const token = localStorage.getItem('token');
         const userId = localStorage.getItem("userId")
-        // console.log(token, phone);
-        if (userId != null) {
-            // Requires:  userId,mobileId,mobileName,mobilePrice,mobileImageUrl
-            // var userId = localStorage.getItem("userId")
-            var mobileId = phone.mobileId;
-            var mobileName = phone.mobileName;
-            var mobilePrice = phone.mobilePrice;
-            var mobileImageUrl = phone.imageUrl;
-            fetch("http://localhost:3000/basket", {
-                method: "POST", // *GET, POST, PUT, DELETE, etc.
-                mode: "cors", // no-cors, cors, *same-origin
-                headers: {
-                    "Content-Type": 'application/x-www-form-urlencoded',
-                    "Authorization": "Bearer " + token
-                },
-                body: new URLSearchParams("userId=" + userId +
-                    "&mobileId=" + mobileId +
-                    "&mobileName=" + mobileName +
-                    "&mobilePrice=" + mobilePrice +
-                    "&mobileImageUrl=" + mobileImageUrl), // body data type must match "Content-Type" header
-
-            }).then(function (response) {
-                return response.json();
-            }).then(myJson => {
-                // console.log(myJson);
+        // Requires:  userId,mobileId,mobileName,mobilePrice,mobileImageUrl
+        // var userId = localStorage.getItem("userId")
+        var mobileId = phone.mobileId;
+        var mobileName = phone.mobileName;
+        var mobilePrice = phone.mobilePrice;
+        var mobileImageUrl = phone.imageUrl;
+        fetch("http://localhost:3000/basket", {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, cors, *same-origin
+            headers: {
+                "Content-Type": 'application/x-www-form-urlencoded',
+                "Authorization": "Bearer " + token
+            },
+            body: new URLSearchParams("userId=" + userId +
+                "&mobileId=" + mobileId +
+                "&mobileName=" + mobileName +
+                "&mobilePrice=" + mobilePrice +
+                "&mobileImageUrl=" + mobileImageUrl), // body data type must match "Content-Type" header
+        }).then(function (response) {
+            return response.json();
+        }).then(myJson => {
+            console.log(myJson.Message);
+            if (myJson.Message != "success") {
+                this.setState({ loggInMessage: "Please Login Before continuing" })
+                setTimeout(
+                    function () {
+                        this.setState({ loggInMessage: "" })
+                    }.bind(this),
+                    2000
+                );
+            } else {
                 this.setState({ success: true })
                 setTimeout(
                     function () {
@@ -87,53 +167,55 @@ class DetailPhoneComponent extends Component {
                         .bind(this),
                     3000
                 );
-            })
-        } else {
-            this.setState({ loggInMessage: "Please Login Before continuing" })
-        }
+            }
+        })
     }
+
     addToWishlist(phone) {
         var userId = localStorage.getItem("userId");
         var token = localStorage.getItem("token")
-        if (userId != null) {
-            var mobileId = phone.mobileId;
-            fetch("http://localhost:3000/myWishedProduct", {
-                method: "POST", // *GET, POST, PUT, DELETE, etc.
-                mode: "cors", // no-cors, cors, *same-origin
-                headers: {
-                    "Content-Type": 'application/x-www-form-urlencoded',
-                    "Authorization": "Bearer " + token
-                },
-                body: new URLSearchParams("userId=" + userId +
-                    "&mobileId=" + mobileId), // body data type must match "Content-Type" header
+        var mobileId = phone.mobileId;
+        fetch("http://localhost:3000/myWishedProduct", {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, cors, *same-origin
+            headers: {
+                "Content-Type": 'application/x-www-form-urlencoded',
+                "Authorization": "Bearer " + token
+            },
+            body: new URLSearchParams("userId=" + userId +
+                "&mobileId=" + mobileId), // body data type must match "Content-Type" header
 
-            }).then(function (response) {
-                return response.json();
-            }).then(myJson => {
-                // console.log(myJson);
-                this.setState({ success: true })
+        }).then(function (response) {
+            return response.json();
+        }).then(myJson => {
+            console.log(myJson.Message);
+            if (myJson.Message != "success") {
+                this.setState({ loggInMessage: "Please Login Before continuing" })
                 setTimeout(
                     function () {
-                        this.setState({ success: false });
+                        this.setState({ loggInMessage: "" })
+                    }.bind(this),
+                    2000
+                );
+            } else {
+                this.setState({ loggInMessage: myJson.Content })
+                // this.setState({ success: true })
+                setTimeout(
+                    function () {
+                        // this.setState({ success: false });
+                        this.setState({ loggInMessage: "" })
                     }
                         .bind(this),
                     3000
                 );
-            })
-        } else {
-            this.setState({ loggInMessage: "Please Login Before continuing" })
-        }
+            }
+        })
     }
     componentDidMount() {
-        console.log("Im detail comp")
-        // console.log(this.props.match.params);
-        // console.log(this.props.match.params.mobileid);
+
         const mobileIdToSearch = this.props.match.params.mobileid;
-        console.log(mobileIdToSearch)
         var url = new URL("http://localhost:3000/getPhone/" + mobileIdToSearch)
         var params = { mobileId: mobileIdToSearch }
-        // var params = [['lat', '35.696233'], ['long', '139.570431']]
-        console.log(params.mobileId)
         url.search = new URLSearchParams(params)
 
         const colorVariant = [];
@@ -141,15 +223,11 @@ class DetailPhoneComponent extends Component {
             .then(function (response) {
                 return response.json();
             })
-            // .then(response => response.json())
             .then(function (myJson) {
-                console.log((myJson));
                 return myJson.MobileData;
             })
             .then(details => {
-
                 this.setState({ mobilePhone: details })
-
                 this.setState({ selectedColorVariant: this.state.mobilePhone.colourVariant["colour1"] });
                 this.setState({ selectedSizeVariant: this.state.mobilePhone.sizeVariant["size1"] });
                 if (this.state.mobilePhone.topSpec.os == "Android") {
@@ -157,27 +235,44 @@ class DetailPhoneComponent extends Component {
                 }
                 else {
                     this.setState({ android: false });
-
                 }
-                console.log("last one  ", this.state.android);
                 var tempColours = details.colourVariant;
-                console.log(tempColours)
                 for (let key in tempColours) {
                     let value = tempColours[key];
                     this.setState({ phoneDetails: details })
                     colorVariant.push(value);
                 }
                 this.setState({ colorVar: colorVariant })
-
-                console.log(tempColours);
-                console.log(colorVariant);
-                console.log();
-                console.log(this.state.mobilePhone);
-
             })
-        // var temp = new URLSearchParams(this.props.location);
-        // console.log(temp)
-        // console.log(this.props.location.search);
+        fetch("http://localhost:3000/productReview/" + mobileIdToSearch)
+            .then(function (response) {
+                return (response.json())
+            }).then(function (jsonVal) {
+                return jsonVal
+            }).then(reviews => {
+                console.log(reviews);
+                if (reviews.reviews != "None") {
+                    this.setState({ totalReviewCount: reviews.totalReviews })
+                    this.setState({ userReviews: reviews.reviews })
+                    this.setState({ givenStar: reviews.ratings });
+
+                    this.setState ({oneStars : parseInt(parseInt(reviews.oneStars) / parseInt(reviews.totalReviews) * 100 + "%")}) 
+                    this.setState ({twoStars : parseInt(parseInt(reviews.twoStars) / parseInt(reviews.totalReviews) * 100 + "%")})
+                    this.setState ({threeStars : parseInt(parseInt(reviews.threeStars) / parseInt(reviews.totalReviews) * 100 + "%")})
+                    this.setState ({fourStars : parseInt(parseInt(reviews.fourStars) / parseInt(reviews.totalReviews) * 100 + "%")})
+                    this.setState ({fiveStars : parseInt(parseInt(reviews.fiveStars) / parseInt(reviews.totalReviews) * 100 + "%")})
+                    // console.log(this.state.oneStars);
+                    this.setState({ oneStars : this.state.oneStars + "%"})
+                    this.setState({ twoStars : this.state.twoStars + "%"})
+                    this.setState({ threeStars : this.state.threeStars + "%"})
+                    this.setState({ fourStars : this.state.fourStars + "%"})
+                    this.setState({ fiveStars : this.state.fiveStars + "%"})
+                    // console.log(this.state.oneStars);
+                } if (reviews.reviews == "None") {
+                    this.setState({ totalReviewCount: 0 })
+                    this.setState({ userReviews: [] });
+                }
+            })
     }
     render() {
         const colourVariants = Object.keys(this.state.mobilePhone.colourVariant).map(color =>
@@ -244,10 +339,196 @@ class DetailPhoneComponent extends Component {
                 </div>
 
             );
+        const viewsStars = this.state.reviewStarCount.map((stars) =>
+            <span className="text-left">
+                {stars <= this.state.givenStar ? (
+                    <span className="fa fa-star checked"></span>
+                ) :
+                    <span className="fa fa-star noStar"></span>
+                }
+            </span>
+        );
+
+        const n = 5; // Or something else
+        const GivenStarsInReview = ({ noOfStars }) =>
+            [...Array(n)].map((e, i) =>
+                <span className="text-left">
+                    {i <= noOfStars ? (
+                        <span className="fa fa-star checked"></span>
+                    ) :
+                        <span className="fa fa-star noStar"></span>
+                    }
+                </span>
+            )
+        //  <span className="fa fa-star checked" key={i}>{noOfStars} {i}</span>)
+        // this.state.reviewStarCount.map((stars, noOfStars) =>
+        //     <span className="text-left">
+        //         <span> {stars}</span>
+        //         <span> {noOfStars}</span>
+        //          {stars <= noOfStars ? (
+
+        //         <span className="fa fa-star checked"></span>
+        //         ) :
+        //             <span className="fa fa-star noStar"></span>
+        //         }
+        //     </span>
+        // );
+        const OneStarBarWidth = {
+            width: this.state.oneStars
+        };
+        const TwoStarBarWidh = {
+            width: this.state.twoStars
+        };
+        const ThreeStarBarWidh = {
+            width: this.state.threeStars
+        };
+        const FourStarBarWidh = {
+            width: this.state.fourStars
+        };
+        const FiveStarBarWidh = {
+            width: this.state.fiveStars
+        };
+        const writeReview =
+            (
+                <span className="text-left">
+                    <p className="text-center">
+                        {this.state.totalReviewCount} Cutomer Reviews
+                </p>
+                    <div className="row rounded">
+                        <div className="side">
+                            <div>5 star</div>
+                        </div>
+                        <div className="middle">
+                            <div className="bar-container">
+                                <div style={FiveStarBarWidh} className="bar-5"></div>
+                            </div>
+                        </div>
+                        <div className="side right">
+                            <div>{this.state.fiveStars}</div>
+                        </div>
+                        <div className="side">
+                            <div>4 star</div>
+                        </div>
+                        <div className="middle">
+                            <div className="bar-container">
+                                <div style={FourStarBarWidh} className="bar-4"></div>
+                            </div>
+                        </div>
+                        <div className="side right">
+                            <div>{this.state.fourStars}</div>
+                        </div>
+                        <div className="side">
+                            <div>3 star</div>
+                        </div>
+                        <div className="middle">
+                            <div className="bar-container">
+                                <div style={ThreeStarBarWidh} className="bar-3"></div>
+                            </div>
+                        </div>
+                        <div className="side right">
+                            <div>{this.state.threeStars}</div>
+                        </div>
+                        <div className="side">
+                            <div>2 star</div>
+                        </div>
+                        <div className="middle">
+                            <div className="bar-container">
+                                <div className="bar-2" style={TwoStarBarWidh} ></div>
+                            </div>
+                        </div>
+                        <div className="side right">
+                            <div>{this.state.twoStars}</div>
+                        </div>
+                        <div className="side">
+                            <div>1 star</div>
+                        </div>
+                        <div className="middle">
+                            <div className="bar-container">
+                                <div className="bar-1" style={OneStarBarWidth} ></div>
+                            </div>
+                        </div>
+                        <div className="side right">
+                            <div>{this.state.oneStars}</div>
+                        </div>
+                    </div>
+                </span>
+            );
+        const allReviews =
+            this.state.userReviews.map(review =>
+                <div key={review._id} className="shadow bg-light rounded text-left">
+                    <div className="border  p-3 mb-5 mt-4">
+                        <div className="mt-1 mb-1 starRating">
+                            <GivenStarsInReview noOfStars={review.noOfStars} />
+                        </div>
+                        <p className="font-weight-bold">{review.opinion}</p>
+                        <p className="font-weight-normal">{review.opinion}</p>
+                        <div className="card-footer text-muted">
+                            <img src={"https://images-eu.ssl-images-amazon.com/images/S/amazon-avatars/default._CR0,0,1024,1024_SX48_.png"}
+                                className="bg-secondary userIcon" />
+                            {review.userName}
+                        </div>
+                    </div>
+                </div>
+            );
 
         return (
+
             <div>
-                {/* <h1>{samName}</h1> */}
+                <div className="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+                    aria-hidden="true">
+                    <div className="modal-dialog modal-lg" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="exampleModalCenterTitle">Review</h5>
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <div className="container text-left">
+                                    {this.state.success &&
+                                        <div className="alert alert-success mt-2" role="alert">
+                                            Success
+                        </div>
+                                    }
+                                    {this.state.loggInMessage.length > 0 &&
+                                        <div className="alert alert-info mt-2" role="alert">
+                                            {this.state.loggInMessage}
+                                        </div>
+                                    }
+                                    <span>Stars</span>
+                                    <div>
+                                        <fieldset className="rating">
+                                            <input type="radio" id="star5" name="rating" value="5" onClick={this.myFunction.bind(this)} /><label className="full"
+                                                for="star5"></label>
+                                            <input type="radio" id="star4" name="rating" value="4" onClick={this.myFunction} /><label className="full"
+                                                for="star4"></label>
+                                            <input type="radio" id="star3" name="rating" value="3" onClick={this.myFunction} /><label className="full"
+                                                for="star3"></label>
+                                            <input type="radio" id="star2" name="rating" value="2" onClick={this.myFunction} /><label className="full"
+                                                for="star2"></label>
+                                            <input type="radio" id="star1" name="rating" value="1" onClick={this.myFunction} /><label className="full"
+                                                for="star1"></label>
+                                        </fieldset>
+                                    </div>
+                                    <hr className="customTopLine customBottonLine"></hr>
+                                    <span>Comment</span>
+                                    <div className="input-group">
+                                        <div className="input-group-prepend">
+                                            <span className="input-group-text">With textarea</span>
+                                        </div>
+                                        <textarea className="form-control" value={this.state.userGivenOpinion} onChange={this.handleChange} aria-label="With textarea"></textarea>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" className="btn btn-success" onClick={this.sendReview} >Post Review</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div className="detailPageBody bg-light mt-2">
                     <div className="container bg-white">
                         {this.state.success &&
@@ -256,7 +537,7 @@ class DetailPhoneComponent extends Component {
                         </div>
                         }
                         {this.state.loggInMessage.length > 0 &&
-                            <div className="alert alert-success mt-2" role="alert">
+                            <div className="alert alert-info mt-2" role="alert">
                                 {this.state.loggInMessage}
                             </div>
                         }
@@ -267,6 +548,17 @@ class DetailPhoneComponent extends Component {
                                 </div>
                             </div>
                             <div className=" col-md-6 ">
+                                <div className="text-left">
+                                    {this.state.totalReviewCount > 0 ? (
+                                        <span> {viewsStars}
+                                            <span className="text-left"> {this.state.totalReviewCount} Cutomer Reviews</span>
+                                        </span>
+                                    ) : <span className="font-weight-light">No Reviews</span>
+                                    }
+
+
+                                </div>
+                                {/* <span class="totalReviews"> {{ totalNoOfReviews }} customer reviews</span> */}
                                 <p className="font-weight-bold text-left text-uppercase">{phone.mobileName}</p>
                                 <p className=" font-weight-bold text-left text-uppercase">Size :
                                     <span className="font-weight-light text-capitalize">
@@ -348,6 +640,30 @@ class DetailPhoneComponent extends Component {
                                     {fullSpec}
                                 </tbody>
                             </table>
+                        </div>
+                        <div className="bg-light rounded text-center p-3 mb-5">
+                            <p className=" font-weight-light text-capitalize text-center">Reviews</p>
+                            <div className="row">
+                                <div className="col-sm-4 ">
+                                    {writeReview}
+                                    <hr className="customLine"></hr>
+                                    <div className="text-left">
+                                        <p className="font-weight-bold">Review this product</p>
+                                        <p className="font-weight-normal">Share your thoughts with other customers</p>
+                                        <button type="button" className="btn btn-outline-info btn-block" data-toggle="modal" data-target="#exampleModalCenter">Write
+                                        a customer review</button>
+                                    </div>
+                                </div>
+                                <div className="col-sm-8">
+
+                                    {this.state.totalReviewCount > 0 ? (
+                                        <div>
+                                            {allReviews}
+                                        </div>
+                                    ) : <span className="font-weight-light">No Reviews</span>
+                                    }
+                                </div>
+                            </div>
                         </div>
                         <p className="font-weight-light">Question And Answer</p>
                         {questionAndAnswer}

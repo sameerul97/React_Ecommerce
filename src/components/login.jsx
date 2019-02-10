@@ -18,6 +18,9 @@ class LoginComponent extends Component {
         this.handleChangeUsername = this.handleChangeUsername.bind(this);
         this.handleChangePassword = this.handleChangePassword.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        // this.props.signOut();
+        var functionA = this.props.signOut;
+        functionA();
 
     }
     componentDidMount() {
