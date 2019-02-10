@@ -82,7 +82,7 @@ class basketComponent extends Component {
             mode: "cors", // no-cors, cors, *same-origin
             headers: {
                 "Content-Type": 'application/x-www-form-urlencoded',
-                "Authorization": "Bearer " + token
+                "Authorization": "Bearer " + localStorage.getItem("token")
             }
         }).then(function (response) {
             return response.json();
@@ -95,21 +95,34 @@ class basketComponent extends Component {
         const myBasket = this.state.itemInBasket.map((phone) =>
             <div className="col-12 col-md-6 col-lg-3 d-flex p-2" key={phone._id} >
                 <div className="card flex-fill shadow-sm"  >
-                    <div className="card-header text-primary" onClick={this.testFunction.bind(this, phone.mobileId)} >
-                        {phone.mobileName}
-                    </div>
-                    <div className="view overlay">
-                        <img className="img-thumbnail" src={phone.mobileImageUrl} alt="Card image cap" />
-                    </div>
-                    <div className="card-body">
-                        <span className="text-primary font-weight-light ">£{phone.mobilePrice}</span>
-                        <div>
-                            <a className=" btn btn-info text-white" onClick={this.orderPhone.bind(this, phone)}>Buy Now
-                        </a>
+
+                    <div className="row no-gutters m-1">
+                        <div className="col-auto">
+                            <img src={phone.mobileImageUrl} alt="Card image cap" />
+                        </div>
+                        <div className="col">
+                            <div className="card-block pt-2 text-info">
+                                <a className="card-text font-weight-light">{phone.mobileName}</a>
+                                <p className="card-text">£{phone.mobilePrice}</p>
+                                <a className="btn btn-info text-white" onClick={this.orderPhone.bind(this, phone)}>Buy Now</a>
+                            </div>
                         </div>
                     </div>
 
+                    <div className="card-footer text-muted mt-2">
+                        <span className="float-left ml-1">
+                            <a onClick={this.deleteItemInBasket.bind(this, phone)} className="text-muted">
+                                <span className="">
+                                    <i className="fas fa-trash-alt"></i>
+                                </span>
+                            </a>
+                        </span>
+                        <span className="float-right">
+                            On Stock!
+          </span>
+                    </div>
                 </div>
+
             </div>
         );
         return (
