@@ -45,26 +45,40 @@ class DetailPhoneComponent extends Component {
             totalReviewCount: 0,
             userGivenStar: 0,
             userGivenOpinion: "",
-            oneStars: 0, 
+            oneStars: 0,
             twoStars: 0,
             threeStars: 0,
             fourStars: 0,
-            fiveStars: 0
-            //  [{noOfStars: "",
-            // opinion: "",
-            // userId: "",
-            // userName: ""}]
+            fiveStars: 0,
+            questionAndAnswers: [],
+            questionAndAnswersCount: 0,
+            question: "",
+            selectedQuestion: "",
+            myAnswer: "",
+            myQuestion: "",
         };
         this.addToBasket = this.addToBasket.bind(this);
         this.myFunction = this.myFunction.bind(this);
         this.sendReview = this.sendReview.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handleAnswerChange = this.handleAnswerChange.bind(this);
+        this.handleQuestionChange = this.handleQuestionChange.bind(this);
     }
     myFunction(e) {
         this.setState({ userGivenStar: e.target.value })
     }
     handleChange(event) {
         this.setState({ userGivenOpinion: event.target.value });
+    }
+    loadQuestionIntoModal(qandA) {
+        this.setState({ question: qandA.question })
+        this.setState({ selectedQuestion: qandA });
+    }
+    handleQuestionChange(event) {
+        this.setState({ myQuestion: event.target.value })
+    }
+    handleAnswerChange(event) {
+        this.setState({ myAnswer: event.target.value });
     }
     setSizeVariant(sizeVariant) {
         this.setState({ selectedSizeVariant: sizeVariant })
@@ -90,39 +104,148 @@ class DetailPhoneComponent extends Component {
             });
         return this.state.tokenValidationBool;
     }
+    sendQuestion() {
+        fetch("http://localhost:3000/postQuestion/", {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, cors, *same-origin
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                Authorization: "Bearer " + localStorage.getItem("token")
+            },
+            body: new URLSearchParams(
+                "userId=" +
+                localStorage.getItem("userId") +
+                "&userName=" +
+                localStorage.getItem("name") +
+                "&question=" +
+                this.state.myQuestion +
+                "&mobileId=" +
+                this.state.mobilePhone.mobileId
+            ) // body data type must match "Content-Type" header
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(myJson => {
+                console.log(myJson);
+                if (myJson.Message != "Success") {
+                    this.setState({ loggInMessage: myJson.Message + "! Please Login Before continuing" })
+                    setTimeout(
+                        function () {
+                            this.setState({ loggInMessage: "" })
+                        }.bind(this),
+                        2000
+                    );
+                } else {
+                    this.setState({ success: true })
+                    setTimeout(
+                        function () {
+                            this.setState({ success: false });
+                            var element = document.getElementById(
+                                "loadQuestionIntoModalCloseButton"
+                            );
+                            element.click();
+                            this.componentDidMount();
+                        }
+                            .bind(this),
+                        3000
+                    );
+                }
+            });
+    }
+    sendAnswer() {
+        console.log(this.state.myAnswer);
+        fetch("http://localhost:3000/postAnswer/", {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, cors, *same-origin
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                Authorization: "Bearer " + localStorage.getItem("token")
+            },
+            body: new URLSearchParams(
+                "userId=" +
+                localStorage.getItem("userId") +
+                "&userName=" +
+                localStorage.getItem("name") +
+                "&answer=" +
+                this.state.myAnswer +
+                "&questionId=" +
+                this.state.selectedQuestion._id
+            ) // body data type must match "Content-Type" header
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(myJson => {
+                console.log(myJson);
+                if (myJson.Message != "Success") {
+                    this.setState({ loggInMessage: myJson.Message + "! Please Login Before continuing" })
+                    setTimeout(
+                        function () {
+                            this.setState({ loggInMessage: "" })
+                        }.bind(this),
+                        2000
+                    );
+                } else {
+                    this.setState({ success: true })
+                    setTimeout(
+                        function () {
+                            this.setState({ success: false });
+                            var element = document.getElementById("AnswerModalcloseButton");
+                            element.click();
+                            this.componentDidMount();
+                        }
+                            .bind(this),
+                        3000
+                    );
+                }
+            });
+    }
     sendReview(event) {
         this.setState({ userGivenOpinion: event.target.value });
         const token = localStorage.getItem('token');
         const userId = localStorage.getItem("userId");
-        console.log(this.checkTokenValidation());
-        if (this.checkTokenValidation()) {
-            fetch("http://localhost:3000/writeMyReview/", {
-                method: "POST", // *GET, POST, PUT, DELETE, etc.
-                mode: "cors", // no-cors, cors, *same-origin
-                headers: {
-                    "Content-Type": 'application/x-www-form-urlencoded',
-                    "Authorization": "Bearer " + token
-                },
-                body: new URLSearchParams("userId=" + userId +
-                    "&userName=" + localStorage.getItem("name") +
-                    "&noOfStars=" + this.state.userGivenStar +
-                    "&opinionText=" + this.state.userGivenOpinion + // body data type must match "Content-Type" header
-                    "&mobileId=" + this.state.mobilePhone.mobileId), // body data type must match "Content-Type" header
+        // console.log(this.checkTokenValidation());
+        // if (this.checkTokenValidation()) {
+        fetch("http://localhost:3000/writeMyReview/", {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            mode: "cors", // no-cors, cors, *same-origin
+            headers: {
+                "Content-Type": 'application/x-www-form-urlencoded',
+                "Authorization": "Bearer " + token
+            },
+            body: new URLSearchParams("userId=" + userId +
+                "&userName=" + localStorage.getItem("name") +
+                "&noOfStars=" + this.state.userGivenStar +
+                "&opinionText=" + this.state.userGivenOpinion + // body data type must match "Content-Type" header
+                "&mobileId=" + this.state.mobilePhone.mobileId), // body data type must match "Content-Type" header
 
-            }).then(function (response) {
-                return response.json();
-            }).then(myJson => {
-                console.log(myJson);
-            })
-        } else {
-            this.setState({ loggInMessage: "Please Login Before continuing" })
-            setTimeout(
-                function () {
-                    this.setState({ loggInMessage: "" })
-                }.bind(this),
-                2000
-            );
-        }
+        }).then(function (response) {
+            return response.json();
+        }).then(myJson => {
+            console.log(myJson);
+            if (myJson.Message != "success") {
+                this.setState({ loggInMessage: myJson.Message + "! Please Login Before continuing" })
+                setTimeout(
+                    function () {
+                        this.setState({ loggInMessage: "" })
+                    }.bind(this),
+                    2000
+                );
+            } else {
+                this.setState({ success: true })
+                setTimeout(
+                    function () {
+                        this.setState({ success: false });
+                        var element = document.getElementById("closeButton");
+                        element.click();
+                        this.componentDidMount();
+                    }
+                        .bind(this),
+                    3000
+                );
+            }
+        })
     }
     addToBasket(phone) {
         console.log(phone)
@@ -151,7 +274,7 @@ class DetailPhoneComponent extends Component {
         }).then(myJson => {
             console.log(myJson.Message);
             if (myJson.Message != "success") {
-                this.setState({ loggInMessage: "Please Login Before continuing" })
+                this.setState({ loggInMessage: myJson.Message + " ! Please Login Before continuing" })
                 setTimeout(
                     function () {
                         this.setState({ loggInMessage: "" })
@@ -190,7 +313,7 @@ class DetailPhoneComponent extends Component {
         }).then(myJson => {
             console.log(myJson.Message);
             if (myJson.Message != "success") {
-                this.setState({ loggInMessage: "Please Login Before continuing" })
+                this.setState({ loggInMessage: myJson.Message + "! Please Login Before continuing" })
                 setTimeout(
                     function () {
                         this.setState({ loggInMessage: "" })
@@ -243,6 +366,7 @@ class DetailPhoneComponent extends Component {
                     colorVariant.push(value);
                 }
                 this.setState({ colorVar: colorVariant })
+                console.log(this.state.mobilePhone)
             })
         fetch("http://localhost:3000/productReview/" + mobileIdToSearch)
             .then(function (response) {
@@ -256,22 +380,45 @@ class DetailPhoneComponent extends Component {
                     this.setState({ userReviews: reviews.reviews })
                     this.setState({ givenStar: reviews.ratings });
 
-                    this.setState ({oneStars : parseInt(parseInt(reviews.oneStars) / parseInt(reviews.totalReviews) * 100 + "%")}) 
-                    this.setState ({twoStars : parseInt(parseInt(reviews.twoStars) / parseInt(reviews.totalReviews) * 100 + "%")})
-                    this.setState ({threeStars : parseInt(parseInt(reviews.threeStars) / parseInt(reviews.totalReviews) * 100 + "%")})
-                    this.setState ({fourStars : parseInt(parseInt(reviews.fourStars) / parseInt(reviews.totalReviews) * 100 + "%")})
-                    this.setState ({fiveStars : parseInt(parseInt(reviews.fiveStars) / parseInt(reviews.totalReviews) * 100 + "%")})
+                    this.setState({ oneStars: parseInt(parseInt(reviews.oneStars) / parseInt(reviews.totalReviews) * 100 + "%") })
+                    this.setState({ twoStars: parseInt(parseInt(reviews.twoStars) / parseInt(reviews.totalReviews) * 100 + "%") })
+                    this.setState({ threeStars: parseInt(parseInt(reviews.threeStars) / parseInt(reviews.totalReviews) * 100 + "%") })
+                    this.setState({ fourStars: parseInt(parseInt(reviews.fourStars) / parseInt(reviews.totalReviews) * 100 + "%") })
+                    this.setState({ fiveStars: parseInt(parseInt(reviews.fiveStars) / parseInt(reviews.totalReviews) * 100 + "%") })
                     // console.log(this.state.oneStars);
-                    this.setState({ oneStars : this.state.oneStars + "%"})
-                    this.setState({ twoStars : this.state.twoStars + "%"})
-                    this.setState({ threeStars : this.state.threeStars + "%"})
-                    this.setState({ fourStars : this.state.fourStars + "%"})
-                    this.setState({ fiveStars : this.state.fiveStars + "%"})
+                    this.setState({ oneStars: this.state.oneStars + "%" })
+                    this.setState({ twoStars: this.state.twoStars + "%" })
+                    this.setState({ threeStars: this.state.threeStars + "%" })
+                    this.setState({ fourStars: this.state.fourStars + "%" })
+                    this.setState({ fiveStars: this.state.fiveStars + "%" })
                     // console.log(this.state.oneStars);
                 } if (reviews.reviews == "None") {
                     this.setState({ totalReviewCount: 0 })
                     this.setState({ userReviews: [] });
                 }
+            });
+        fetch("http://localhost:3000/getQAndAs/" + mobileIdToSearch)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (myJson) {
+                console.log(myJson);
+                return myJson;
+            })
+            .then(details => {
+                console.log(details.qAndAs);
+                if (details.qAndAs != "None") {
+                    console.log(this.state.questionAndAnswers);
+                    this.setState({ questionAndAnswers: details.qAndAs });
+                    console.log(this.state.questionAndAnswers);
+                    this.setState({ questionAndAnswersCount: 1 })
+                }
+                if (details.qAndAs == "None") {
+                    console.log("its none")
+                    this.setState({ questionAndAnswers: [] })
+                    this.setState({ questionAndAnswersCount: 0 })
+                }
+                console.log(this.state.questionAndAnswers.length)
             })
     }
     render() {
@@ -282,13 +429,13 @@ class DetailPhoneComponent extends Component {
         );
 
         const tifOptions = Object.keys(this.state.mobilePhone.sizeVariant).map(key =>
-            <span value={key} className="btn btn-outline-primary font-weight-light text-capitalize mr-1" onClick={this.setSizeVariant.bind(this, this.state.mobilePhone.sizeVariant[key])} >
+            <span value={key} key={key} className="btn btn-outline-primary font-weight-light text-capitalize mr-1" onClick={this.setSizeVariant.bind(this, this.state.mobilePhone.sizeVariant[key])} >
                 {this.state.mobilePhone.sizeVariant[key]}
             </span>
         )
 
         const fullSpec = Object.keys(this.state.mobilePhone.fullSpec).map((spec, index) =>
-            <tr >
+            <tr key={index} >
                 <th>{index}</th>
                 <th scope="row">{spec}</th>
                 <td >{this.state.mobilePhone.fullSpec[spec]}</td>
@@ -297,14 +444,13 @@ class DetailPhoneComponent extends Component {
         const phone = this.state.mobilePhone;
         const postQuestion =
             (
-                <div className="shadow p-3 mb-5 mt-4 bg-light rounded text-left">
-                    <p className="font-weight-bold">Post your question</p>
-                    <div className="form-group">
-                        {/* <p className="font-weight-bold">Qualty of camera ?</p> */}
-                        <textarea className="form-control" rows="5" id="comment"></textarea>
+                <div>
+                    <hr />
+                    <div className="text-left">
+                        <p className="font-weight-bold">Answer a question</p>
+                        <button type="button" className="btn btn-outline-info btn-block" data-toggle="modal" data-target="#postQuestion">Post
+                        question</button>
                     </div>
-                    <button type="button" className="btn btn-primary">Post Question</button>
-
                 </div>
             );
         const postAnswer =
@@ -337,10 +483,64 @@ class DetailPhoneComponent extends Component {
                     </div>
                     </div>
                 </div>
-
             );
-        const viewsStars = this.state.reviewStarCount.map((stars) =>
-            <span className="text-left">
+        // const ShortAnswer = ({ allAnswers }) => { allAnswers.map((item) => <li>{item}</li>) }
+
+        const ShortAnswer = ({ allAnswers }) =>
+            [...Array(allAnswers.length)].map((answer, i) =>
+                <div className="p-1 ml-3 mb-2 mt-2" key={i}>
+                    <p className="font-weight-light">{allAnswers[i].answer}</p>
+                    <div className="card-footer text-muted">
+                        <img className="bg-secondary userIcon" src={"https://images-eu.ssl-images-amazon.com/images/S/amazon-avatars/default._CR0,0,1024,1024_SX48_.png"} />
+                        Answered by{allAnswers[i].userName}
+                    </div>
+                </div>
+            )
+        const LongAnswer = ({ allAnswers }) =>
+            [...Array(allAnswers.length)].map((answer, i) =>
+                <div className="p-1 ml-3 mb-2 mt-2" key={i}>
+                    <p className="font-weight-light">{allAnswers[i].answer}</p>
+                    <div className="card-footer text-muted">
+                        <img className="bg-secondary userIcon" src="https://images-eu.ssl-images-amazon.com/images/S/amazon-avatars/default._CR0,0,1024,1024_SX48_.png" />
+                        Answered by {allAnswers[i].userName}
+                    </div>
+                </div>
+            )
+        const questionAndAnswersComp = this.state.questionAndAnswers.map((qAndAs) =>
+            <div key={qAndAs._id} className="shadow bg-light rounded text-left" >
+                <div className="border  p-3 mb-5 mt-4">
+                    <p className="font-weight-bold  text-primary">{qAndAs.question}</p>
+                    <div className="card-footer text-muted">
+                        <img className="bg-secondary userIcon" src={"https://images-eu.ssl-images-amazon.com/images/S/amazon-avatars/default._CR0,0,1024,1024_SX48_.png"} />
+                        {qAndAs.userName}
+                        <span className="float-right mt-1">
+                            <a className=" btn btn-info text-light btn-sm" onClick={this.loadQuestionIntoModal.bind(this, qAndAs)} data-toggle="modal" data-target="#writingAnAnswer">
+                                Answer {qAndAs.userName} question </a>
+                        </span>
+                    </div>
+                    {qAndAs.answers.length < 2 ? (
+                        <ShortAnswer allAnswers={qAndAs.answers} />
+                    ) :
+                        <div className="accordion" id="accordionExample">
+                            <h5 className="mb-0">
+                                <button className="btn btn-link " type="button" data-toggle="collapse"
+                                    aria-expanded="false" aria-controls="collapseOne">
+                                    <i className="fas fa-chevron-circle-down"></i>
+                                </button>
+                                <span className="btn btn-link fullSpecLink" data-toggle="collapse" data-target={"#demo" + qAndAs._id}
+                                    aria-expanded="false" aria-controls="collapseOne">View answer</span>
+                            </h5>
+                            <div id={"demo" + qAndAs._id} className="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                <LongAnswer allAnswers={qAndAs.answers} />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        );
+
+        const viewsStars = this.state.reviewStarCount.map((stars, index) =>
+            <span className="text-left" key={index}>
                 {stars <= this.state.givenStar ? (
                     <span className="fa fa-star checked"></span>
                 ) :
@@ -353,26 +553,14 @@ class DetailPhoneComponent extends Component {
         const GivenStarsInReview = ({ noOfStars }) =>
             [...Array(n)].map((e, i) =>
                 <span className="text-left">
-                    {i <= noOfStars ? (
+                    {i + 1 <= noOfStars ? (
                         <span className="fa fa-star checked"></span>
                     ) :
                         <span className="fa fa-star noStar"></span>
                     }
                 </span>
             )
-        //  <span className="fa fa-star checked" key={i}>{noOfStars} {i}</span>)
-        // this.state.reviewStarCount.map((stars, noOfStars) =>
-        //     <span className="text-left">
-        //         <span> {stars}</span>
-        //         <span> {noOfStars}</span>
-        //          {stars <= noOfStars ? (
 
-        //         <span className="fa fa-star checked"></span>
-        //         ) :
-        //             <span className="fa fa-star noStar"></span>
-        //         }
-        //     </span>
-        // );
         const OneStarBarWidth = {
             width: this.state.oneStars
         };
@@ -474,7 +662,7 @@ class DetailPhoneComponent extends Component {
         return (
 
             <div>
-                <div className="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+                <div className="modal fade bd-example-modal-lg" id="exampleModalCenter" role="dialog" aria-labelledby="exampleModalCenterTitle"
                     aria-hidden="true">
                     <div className="modal-dialog modal-lg" role="document">
                         <div className="modal-content">
@@ -489,7 +677,7 @@ class DetailPhoneComponent extends Component {
                                     {this.state.success &&
                                         <div className="alert alert-success mt-2" role="alert">
                                             Success
-                        </div>
+                                </div>
                                     }
                                     {this.state.loggInMessage.length > 0 &&
                                         <div className="alert alert-info mt-2" role="alert">
@@ -523,12 +711,114 @@ class DetailPhoneComponent extends Component {
 
                             </div>
                             <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" className="btn btn-secondary" id="closeButton" data-dismiss="modal">Close</button>
                                 <button type="button" className="btn btn-success" onClick={this.sendReview} >Post Review</button>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div
+                    className="modal fade bd-example-modal-lg"
+                    id="writingAnAnswer"
+                    role="dialog"
+                    aria-labelledby="exampleModalCenterTitle"
+                    aria-hidden="true"
+                >
+                    <div className="modal-dialog modal-lg" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="exampleModalCenterTitle">Write answer</h5>
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <div className="container text-left">
+                                    {this.state.success &&
+                                        <div className="alert alert-success mt-2" role="alert">
+                                            Success
+                                </div>
+                                    }
+                                    {this.state.loggInMessage.length > 0 &&
+                                        <div className="alert alert-info mt-2" role="alert">
+                                            {this.state.loggInMessage}
+                                        </div>
+                                    }
+                                    <div>{this.state.question}</div>
+                                    <hr className="customTopLine customBottonLine" />
+                                    <span>Enter your answer</span>
+                                    <div className="input-group">
+                                        <div className="input-group-prepend">
+                                            <span className="input-group-text">With textarea</span>
+                                        </div>
+                                        <textarea className="form-control" value={this.state.myAnswer} onChange={this.handleAnswerChange} aria-label="With textarea"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button
+                                    type="button"
+                                    className="btn btn-secondary"
+                                    id="AnswerModalcloseButton"
+                                    data-dismiss="modal"
+                                >Close</button>
+                                <button type="button" className="btn btn-success" onClick={this.sendAnswer.bind(this)}>Post Answer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    className="modal fade bd-example-modal-lg"
+                    id="postQuestion"
+                    role="dialog"
+                    aria-labelledby="exampleModalCenterTitle"
+                    aria-hidden="true"
+                >
+                    <div className="modal-dialog modal-lg" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="exampleModalCenterTitle">Ask your question</h5>
+                                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <div className="container text-left">
+                                    {this.state.success &&
+                                        <div className="alert alert-success mt-2" role="alert">
+                                            Success
+                                </div>
+                                    }
+                                    {this.state.loggInMessage.length > 0 &&
+                                        <div className="alert alert-info mt-2" role="alert">
+                                            {this.state.loggInMessage}
+                                        </div>
+                                    }
+                                    <hr className="customTopLine customBottonLine" />
+                                    <span>Enter your question</span>
+                                    <div className="input-group">
+                                        <div className="input-group-prepend">
+                                            <span className="input-group-text">Question</span>
+                                        </div>
+                                        <textarea className="form-control" value={this.state.myQuestion} onChange={this.handleQuestionChange} aria-label="With textarea"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button
+                                    type="button"
+                                    className="btn btn-secondary"
+                                    id="loadQuestionIntoModalCloseButton"
+                                    data-dismiss="modal"
+                                >Close</button>
+                                <button type="button" className="btn btn-success" onClick={this.sendQuestion.bind(this)}>Post Question</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div className="detailPageBody bg-light mt-2">
                     <div className="container bg-white">
                         {this.state.success &&
@@ -631,16 +921,57 @@ class DetailPhoneComponent extends Component {
                                     <p className="font-weight-light"> {this.state.mobilePhone.topSpec.display} </p>
                                 </div>
                             </div>
+                            <div className="text-center">
+                                <span className="text-center btn btn-link text-primary viewFullSpecLink" data-toggle="collapse" data-target="#collapseOne"
+                                    aria-expanded="false" aria-controls="collapseOne">VIEW FULL SPECIFICATIONS</span>
+                            </div>
                         </div>
-                        <div className="shadow p-3 mb-5 bg-light rounded border border-info">
-                            <p className="font-weight-light text-capitalize text-center" style={{ fontSize: 1.5 + "rem" }} >Full Spec</p>
-                            <table className="table table-striped">
 
-                                <tbody>
-                                    {fullSpec}
-                                </tbody>
-                            </table>
+                        <div className="shadow p-3 mb-5 bg-light rounded border border-info">
+                            <div className="accordion" id="accordionExample">
+                                <div className="text-left">
+                                    <div className="card-header" id="headingOne">
+                                        <h5 className="mb-0">
+                                            <button className="btn btn-link " type="button" data-toggle="collapse" data-target="#collapseOne"
+                                                aria-expanded="false" aria-controls="collapseOne">
+                                                <i className="fas fa-chevron-circle-down fa-2x"> </i>
+                                            </button>
+                                            <span className="btn btn-link fullSpecLink" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false"
+                                                aria-controls="collapseOne">TECHNICAL SPECIFICATIONS</span>
+                                        </h5>
+                                    </div>
+                                </div>
+
+                                <div id="collapseOne" className="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                                    <div className="card-body">
+                                        <p className="font-weight-light text-capitalize text-center">Full Spec</p>
+                                        <table className="table table-striped">
+                                            <tbody>
+                                                {fullSpec}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                        <div className="bg-light rounded text-center p-3 mb-5">
+                            <p className=" font-weight-light text-capitalize text-center" >Customer questions & answers</p>
+                            <div className="row">
+                                <div className="col-sm-8">
+                                    {this.state.questionAndAnswersCount > 0 ?
+                                        (
+                                            <div>
+                                                {questionAndAnswersComp}
+                                            </div>
+                                        ) : <div className="font-weight-light">No Question and answers! Be the first to Question</div>
+                                    }
+                                </div>
+                                <div className="col-sm-4">
+                                    {postQuestion}
+                                </div>
+                            </div>
+                        </div>
+
                         <div className="bg-light rounded text-center p-3 mb-5">
                             <p className=" font-weight-light text-capitalize text-center">Reviews</p>
                             <div className="row">
@@ -665,20 +996,11 @@ class DetailPhoneComponent extends Component {
                                 </div>
                             </div>
                         </div>
-                        <p className="font-weight-light">Question And Answer</p>
-                        {questionAndAnswer}
-                        <p className="font-weight-light">Post question</p>
-                        {postQuestion}
-                        <p className="font-weight-light">Post answer</p>
-                        {postAnswer}
                     </div>
-
                 </div>
             </div>
         )
     }
-
 }
 // withRouter(DetailPhoneComponent)
-
 export default withRouter(DetailPhoneComponent);

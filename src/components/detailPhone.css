@@ -124,4 +124,11 @@ h1 { font-size: 1.5em; margin: 10px; }
 .rating > input:checked ~ label, /* show gold star when clicked */
 .rating:not(:checked) > label:hover, /* hover current star */
 .rating:not(:checked) > label:hover ~ label { color: #FFD700;  } /* hover previous stars in list */
-
+.fullSpecLink{
+  text-decoration: none;
+  font-weight: 500;
+}
+.viewFullSpecLink{
+  text-decoration: underline;
+  font-weight: 200;
+}
