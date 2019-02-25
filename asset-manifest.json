@@ -1,13 +1,13 @@
 {
-  "main.css": "/static/css/main.142287be.chunk.css",
-  "main.js": "/static/js/main.0cbdd9cd.chunk.js",
-  "main.js.map": "/static/js/main.0cbdd9cd.chunk.js.map",
-  "static/js/1.0a26e5e3.chunk.js": "/static/js/1.0a26e5e3.chunk.js",
-  "static/js/1.0a26e5e3.chunk.js.map": "/static/js/1.0a26e5e3.chunk.js.map",
-  "runtime~main.js": "/static/js/runtime~main.229c360f.js",
-  "runtime~main.js.map": "/static/js/runtime~main.229c360f.js.map",
-  "static/css/main.142287be.chunk.css.map": "/static/css/main.142287be.chunk.css.map",
-  "index.html": "/index.html",
-  "precache-manifest.ba60188b6161f7cf8488af34b5a3d68b.js": "/precache-manifest.ba60188b6161f7cf8488af34b5a3d68b.js",
-  "service-worker.js": "/service-worker.js"
+  "main.css": "/react_ecom_app/static/css/main.142287be.chunk.css",
+  "main.js": "/react_ecom_app/static/js/main.754b80e7.chunk.js",
+  "main.js.map": "/react_ecom_app/static/js/main.754b80e7.chunk.js.map",
+  "static/js/1.0a26e5e3.chunk.js": "/react_ecom_app/static/js/1.0a26e5e3.chunk.js",
+  "static/js/1.0a26e5e3.chunk.js.map": "/react_ecom_app/static/js/1.0a26e5e3.chunk.js.map",
+  "runtime~main.js": "/react_ecom_app/static/js/runtime~main.2951960e.js",
+  "runtime~main.js.map": "/react_ecom_app/static/js/runtime~main.2951960e.js.map",
+  "static/css/main.142287be.chunk.css.map": "/react_ecom_app/static/css/main.142287be.chunk.css.map",
+  "index.html": "/react_ecom_app/index.html",
+  "precache-manifest.34efde12432811f81ac97ea83628345a.js": "/react_ecom_app/precache-manifest.34efde12432811f81ac97ea83628345a.js",
+  "service-worker.js": "/react_ecom_app/service-worker.js"
 }
