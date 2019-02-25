@@ -2,7 +2,7 @@
   "name": "reactstore",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://sameerul97.github.io/react_ecom_app",
+  "homepage": "https://sameerul97.github.io/React_Ecommerce",
   "dependencies": {
     "jwt-decode": "^2.2.0",
     "react": "^16.6.3",

@@ -154,7 +154,7 @@ const AppRouter = () => (
                 <Route path="/detailPhone/:mobileid" component={DetailPhone} />
                 <Route path="/login" component={Login} />
                 <PrivateRoute path="/userDashboard" component={UserDashboard} />
-                <Route component={NoMatch} />
+                <Route component={Index} />
             </Switch>
 
 
