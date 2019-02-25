@@ -15,7 +15,7 @@ class AllPhones extends Component {
         this.props.history.push("/detailPhone/" + mobileId)
     }
     getBestSelling(){
-        fetch("http://localhost:3000/bestSelling")
+        fetch(process.env.REACT_APP_ECOM_API_URL+"/bestSelling")
         .then(function (response) {
             return response.json();
         }).then(myJson =>{
@@ -24,7 +24,7 @@ class AllPhones extends Component {
         })
     }
     getMostlyReviewed(){
-        fetch("http://localhost:3000/mostlyReviewed")
+        fetch(process.env.REACT_APP_ECOM_API_URL+"/mostlyReviewed")
         .then(function (response) {
             return response.json();
         }).then(myJson =>{
@@ -33,7 +33,7 @@ class AllPhones extends Component {
         })
     }
     getLowToHigh(){
-        fetch("http://localhost:3000/lowToHigh")
+        fetch(process.env.REACT_APP_ECOM_API_URL+"/lowToHigh")
         .then(function (response) {
             return response.json();
         }).then(myJson =>{
@@ -42,7 +42,7 @@ class AllPhones extends Component {
         })
     }
     getHighToLow(){
-        fetch("http://localhost:3000/highToLow")
+        fetch(process.env.REACT_APP_ECOM_API_URL+"/highToLow")
         .then(function (response) {
             return response.json();
         }).then(myJson =>{
@@ -51,7 +51,7 @@ class AllPhones extends Component {
         })
     }
     componentDidMount() {
-        fetch("http://localhost:3000/allPhones")
+        fetch(process.env.REACT_APP_ECOM_API_URL+"/allPhones")
             .then(function (response) {
                 return response.json();
             })

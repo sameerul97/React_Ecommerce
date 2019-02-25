@@ -134,8 +134,12 @@ class basketComponent extends Component {
                             </div>
                     }
                     {this.state.itemInBasket.length > 0 ? (
+                        <div>
+                          <h3 class="font-italic font-weight-normal">My Basket</h3>
+
                         < div className="row">
                             {myBasket}
+                        </div>
                         </div>
                     ) : <div class="display-4">No Items in basket</div>
                     }
