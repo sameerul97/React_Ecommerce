@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "/React_Ecommerce-/precache-manifest.dabefe916511c88cd805962aa7ee2d5d.js"
+  "/React_Ecommerce/precache-manifest.ae60677ef01b12cfc7a44e1b3ae4f487.js"
 );
 
 workbox.clientsClaim();
@@ -28,7 +28,7 @@ self.__precacheManifest = [].concat(self.__precacheManifest || []);
 workbox.precaching.suppressWarnings();
 workbox.precaching.precacheAndRoute(self.__precacheManifest, {});
 
-workbox.routing.registerNavigationRoute("/React_Ecommerce-/index.html", {
+workbox.routing.registerNavigationRoute("/React_Ecommerce/index.html", {
   
   blacklist: [/^\/_/,/\/[^\/]+\.[^\/]+$/],
 });
